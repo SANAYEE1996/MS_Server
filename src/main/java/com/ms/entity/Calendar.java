@@ -13,6 +13,9 @@ public class Calendar {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "member_id")
+    private Long memberId;
+
     @Column(name = "year")
     private Integer year;
 
@@ -21,8 +24,4 @@ public class Calendar {
 
     @Column(name = "day")
     private Integer day;
-
-    @ManyToOne
-    @JoinColumn(name = "member_id")
-    private Member member;
 }
