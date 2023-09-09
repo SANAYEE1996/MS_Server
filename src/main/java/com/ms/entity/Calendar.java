@@ -1,12 +1,14 @@
 package com.ms.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity(name = "calendar")
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Calendar {
 
     @Id
