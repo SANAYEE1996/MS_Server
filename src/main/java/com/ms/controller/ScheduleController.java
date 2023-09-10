@@ -34,7 +34,8 @@ public class ScheduleController {
     public ResponseDto save(@RequestBody @Valid ScheduleDto scheduleDto){
         try {
             validationCheck.checkDate(scheduleDto);
-            Calendar calendar = calendarService.findCalendar(calendarService.save(converter.toCalendar(scheduleDto)));
+            Long calendarId = (scheduleDto.getCalendarId() != null) ? scheduleDto.getCalendarId() : calendarService.save(converter.toCalendar(scheduleDto));
+            Calendar calendar = calendarService.findCalendar(calendarId);
             scheduleService.save(new Schedule(0L, calendar, scheduleDto.getStartHour(), scheduleDto.getStartMin(), scheduleDto.getEndHour(), scheduleDto.getEndMin(), scheduleDto.getTitle(), scheduleDto.getNote()));
         }catch (RuntimeException e){
             log.error(e.getMessage());
