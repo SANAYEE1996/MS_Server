@@ -1,6 +1,6 @@
 package com.ms.service;
 
-import com.ms.dto.CalendarDto;
+import com.ms.dto.ScheduleDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class ValidationCheck {
 
-    public void checkDate(CalendarDto calendarDto) throws RuntimeException{
+    public void checkDate(ScheduleDto calendarDto) throws RuntimeException{
         int year = calendarDto.getYear();
         int month = calendarDto.getMonth();
         int day = calendarDto.getDay();
@@ -34,9 +34,6 @@ public class ValidationCheck {
     }
 
     private boolean isLeapYear(int year){
-        if(year % 4 == 0 && year % 100 != 0 && year % 400 == 0){
-            return true;
-        }
-        return false;
+        return year % 4 == 0 && year % 100 != 0 && year % 400 == 0;
     }
 }

@@ -2,13 +2,31 @@ package com.ms.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class ScheduleCreateDto {
+public class ScheduleDto {
+
+    private Long scheduleId;
+
+    @NotBlank(message = "memberId must not Null")
+    private Long memberId;
+
+    @NotBlank(message = "year must not Null")
+    private Integer year;
+
+    @NotBlank(message = "month must not Null")
+    private Integer month;
+
+    @NotBlank(message = "day must not Null")
+    private Integer day;
+
+    private Long calendarId;
 
     @NotBlank(message = "startHour must not Null")
     private Integer startHour;
