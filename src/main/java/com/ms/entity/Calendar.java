@@ -1,14 +1,15 @@
 package com.ms.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name = "calendar")
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class Calendar {
 
     @Id
@@ -26,4 +27,15 @@ public class Calendar {
 
     @Column(name = "day")
     private Integer day;
+
+    @OneToMany(mappedBy =  "calendar")
+    private List<Schedule> scheduleList = new ArrayList<>();
+
+    public Calendar(Long id, Long memberId, Integer year, Integer month, Integer day){
+        this.id = id;
+        this.memberId = memberId;
+        this.year = year;
+        this.month = month;
+        this.day = day;
+    }
 }
