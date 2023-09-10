@@ -13,11 +13,11 @@ public class CalendarService {
 
     private final CalendarRepository calendarRepository;
 
-    public void save(Calendar calendar) throws RuntimeException{
+    public Long save(Calendar calendar) throws RuntimeException{
         if(calendarRepository.existsByMemberIdAndYearAndMonthAndDay(calendar.getMemberId(), calendar.getYear(), calendar.getMonth(), calendar.getDay())){
             throw new RuntimeException("already exists day please do not save. Do update !");
         }
-        calendarRepository.save(calendar);
+        return calendarRepository.save(calendar).getId();
     }
 
     public Calendar findCalendar(Long id) throws RuntimeException{
