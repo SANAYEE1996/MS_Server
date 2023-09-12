@@ -1,13 +1,10 @@
 package com.ms.controller;
 
+import com.ms.dto.ResponseBody;
 import com.ms.dto.ResponseDto;
 import com.ms.dto.ScheduleDto;
-import com.ms.entity.Calendar;
-import com.ms.entity.Schedule;
-import com.ms.service.CalendarService;
-import com.ms.service.Converter;
-import com.ms.service.ScheduleService;
-import com.ms.service.ValidationCheck;
+import com.ms.dto.ScheduleRequestDto;
+import com.ms.service.*;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,25 +19,26 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/schedule")
 public class ScheduleController {
 
-    private final CalendarService calendarService;
-
-    private final ScheduleService scheduleService;
-
-    private final ValidationCheck validationCheck;
-
-    private final Converter converter;
+    private final CombineService combineService;
 
     @PostMapping(value = "/save")
     public ResponseDto save(@RequestBody @Valid ScheduleDto scheduleDto){
         try {
-            validationCheck.checkDate(scheduleDto);
-            Long calendarId = (scheduleDto.getCalendarId() != null) ? scheduleDto.getCalendarId() : calendarService.save(converter.toCalendar(scheduleDto));
-            Calendar calendar = calendarService.findCalendar(calendarId);
-            scheduleService.save(new Schedule(0L, calendar, scheduleDto.getStartHour(), scheduleDto.getStartMin(), scheduleDto.getEndHour(), scheduleDto.getEndMin(), scheduleDto.getTitle(), scheduleDto.getNote()));
+            combineService.saveSchedule(scheduleDto);
         }catch (RuntimeException e){
             log.error(e.getMessage());
             return ResponseDto.builder().code(404).message("save fail").build();
         }
         return ResponseDto.builder().code(200).message("save success").build();
+    }
+
+    @PostMapping(value = "/month")
+    public ResponseDto findMonth(@RequestBody @Valid ScheduleRequestDto scheduleRequestDto){
+        try{
+            return ResponseDto.builder().code(200).message("find success").body(new ResponseBody<>(combineService.findScheduleForMonth(scheduleRequestDto))).build();
+        }catch(RuntimeException e){
+            log.error(e.getMessage());
+            return ResponseDto.builder().code(404).message("fail").build();
+        }
     }
 }

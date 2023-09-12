@@ -12,16 +12,16 @@ public class ValidationCheck {
         int year = calendarDto.getYear();
         int month = calendarDto.getMonth();
         int day = calendarDto.getDay();
-        if( !(1900 <= year && year <= 2100) || !(1 <= month && month <= 12)){
-            throw new RuntimeException("year or month limit exceeded");
+        if( !(1900 <= year && year <= 2100) || !(1 <= month && month <= 12) || day <= 0){
+            throw new RuntimeException("year or month or day limit exceeded");
         }
         boolean leapYear = isLeapYear(year);
         if((month == 1 || month == 3 || month == 5 || month == 7 ||
-           month == 8 || month == 10 || month == 12) && day != 31){
-            throw new RuntimeException(month + " must 31 days");
+           month == 8 || month == 10 || month == 12) && day > 31){
+            throw new RuntimeException(month + " must under 31 days");
         }
-        if((month == 4 || month == 6 || month == 9 || month == 11 ) && day != 30){
-            throw new RuntimeException(month + " must 30 days");
+        if((month == 4 || month == 6 || month == 9 || month == 11 ) && day > 30){
+            throw new RuntimeException(month + " must under 30 days");
         }
         if(month == 2){
             if(leapYear && day != 29){
