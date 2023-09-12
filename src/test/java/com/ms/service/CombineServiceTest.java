@@ -19,12 +19,12 @@ public class CombineServiceTest {
                 .year(2023)
                 .month(8)
                 .day(26)
-                .startHour(0)
+                .startHour(18)
                 .startMin(0)
                 .endHour(23)
                 .endMin(59)
-                .title("내 생일")
-                .note("헤헤 내 생일")
+                .title("party")
+                .note("맛있는거 먹기로 함.")
                 .build();
 
         combineService.saveSchedule(scheduleDto);
