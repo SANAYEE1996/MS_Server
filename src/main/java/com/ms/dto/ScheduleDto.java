@@ -12,7 +12,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ScheduleDto {
 
-    private Long scheduleId;
+    private Long calendarId;
 
     @NotBlank(message = "memberId must not Null")
     private Long memberId;
@@ -26,7 +26,7 @@ public class ScheduleDto {
     @NotBlank(message = "day must not Null")
     private Integer day;
 
-    private Long calendarId;
+    private Long scheduleId;
 
     @NotBlank(message = "startHour must not Null")
     private Integer startHour;
