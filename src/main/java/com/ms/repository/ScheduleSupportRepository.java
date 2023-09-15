@@ -50,6 +50,6 @@ public class ScheduleSupportRepository extends QuerydslRepositorySupport {
                     schedule.note.as("note")
                 ))
                 .from(calendar)
-                .leftJoin(schedule);
+                .leftJoin(calendar.scheduleList, schedule);
     }
 }
