@@ -1,9 +1,12 @@
 package com.ms.service;
 
 import com.ms.dto.ScheduleDto;
+import com.ms.dto.ScheduleRequestDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import java.util.List;
 
 @SpringBootTest
 public class CombineServiceTest {
@@ -15,18 +18,31 @@ public class CombineServiceTest {
     void saveTest(){
         ScheduleDto scheduleDto = ScheduleDto
                 .builder()
-                .memberId(1L)
+                .memberId(2L)
                 .year(2023)
-                .month(8)
+                .month(4)
                 .day(26)
-                .startHour(18)
+                .startHour(10)
                 .startMin(0)
-                .endHour(23)
-                .endMin(59)
-                .title("party")
-                .note("맛있는거 먹기로 함.")
+                .endHour(11)
+                .endMin(00)
+                .title("입금")
+                .note("티켓 입금")
                 .build();
 
         combineService.saveSchedule(scheduleDto);
+    }
+
+    @Test
+    void getTest(){
+        ScheduleRequestDto scheduleRequestDto = ScheduleRequestDto.builder().memberId(2L).year(2023).month(4).build();
+
+        List<ScheduleDto> scheduleDtoList = combineService.findScheduleForMonth(scheduleRequestDto);
+
+        System.out.println("is Empty???? "+scheduleDtoList.isEmpty());
+        for(ScheduleDto scheduleDto : scheduleDtoList){
+            System.out.println(scheduleDto.getTitle() + " " +scheduleDto.getNote());
+        }
+
     }
 }
