@@ -12,14 +12,7 @@ public class ValidationCheck {
         int year = calendarDto.getYear();
         int month = calendarDto.getMonth();
         int day = calendarDto.getDay();
-        if( !(1900 <= year && year <= 2100) || !(1 <= month && month <= 12) || day <= 0){
-            throw new RuntimeException("year or month or day limit exceeded");
-        }
         boolean leapYear = isLeapYear(year);
-        if((month == 1 || month == 3 || month == 5 || month == 7 ||
-           month == 8 || month == 10 || month == 12) && day > 31){
-            throw new RuntimeException(month + " must under 31 days");
-        }
         if((month == 4 || month == 6 || month == 9 || month == 11 ) && day > 30){
             throw new RuntimeException(month + " must under 30 days");
         }
@@ -30,6 +23,16 @@ public class ValidationCheck {
             if(!leapYear && day != 28){
                 throw new RuntimeException(day+" "+month+" must 28 days");
             }
+        }
+    }
+
+    public void checkTime(ScheduleDto timeDto) throws RuntimeException{
+        int startHour = timeDto.getStartHour();
+        int startMin = timeDto.getStartMin();
+        int endHour = timeDto.getEndHour();
+        int endMin = timeDto.getEndMin();
+        if(!(startHour <= endHour && startMin <= endMin)){
+            throw new RuntimeException("start time must smaller than end time");
         }
     }
 
