@@ -27,6 +27,7 @@ public class CombineService {
 
     public void saveSchedule(ScheduleDto scheduleDto) throws RuntimeException{
         validationCheck.checkDate(scheduleDto);
+        validationCheck.checkTime(scheduleDto);
         Long calendarId = (scheduleDto.getCalendarId() != null) ? scheduleDto.getCalendarId() : calendarService.save(converter.toCalendar(scheduleDto));
         Calendar calendar = calendarService.findCalendar(calendarId);
         scheduleService.save(new Schedule(0L, calendar, scheduleDto.getStartHour(), scheduleDto.getStartMin(), scheduleDto.getEndHour(), scheduleDto.getEndMin(), scheduleDto.getTitle(), scheduleDto.getNote()));
@@ -34,5 +35,9 @@ public class CombineService {
 
     public List<ScheduleDto> findScheduleForMonth(ScheduleRequestDto scheduleRequestDto) throws RuntimeException{
         return scheduleFindService.findScheduleForMonth(scheduleRequestDto);
+    }
+
+    public void deleteSchedule(Long schedule_id){
+        scheduleService.delete(schedule_id);
     }
 }

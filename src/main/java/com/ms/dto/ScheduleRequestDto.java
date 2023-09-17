@@ -22,4 +22,6 @@ public class ScheduleRequestDto {
     private Integer month;
 
     private Integer day;
+
+    private Long scheduleId;
 }
