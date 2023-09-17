@@ -20,7 +20,7 @@ public class CombineServiceTest {
                 .builder()
                 .memberId(2L)
                 .year(2023)
-                .month(4)
+                .month(5)
                 .day(26)
                 .startHour(10)
                 .startMin(0)
@@ -44,5 +44,12 @@ public class CombineServiceTest {
             System.out.println(scheduleDto.getCalendarId()+" "+ scheduleDto.getMemberId()+" "+scheduleDto.getTitle() + " " +scheduleDto.getNote());
         }
 
+    }
+
+    @Test
+    void deleteTest(){
+        Long schedule_id = 4L;
+
+        combineService.deleteSchedule(schedule_id);
     }
 }

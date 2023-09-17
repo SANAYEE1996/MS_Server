@@ -41,4 +41,15 @@ public class ScheduleController {
             return ResponseDto.builder().code(404).message("fail").build();
         }
     }
+
+    @PostMapping(value = "/delete")
+    public ResponseDto deleteSchedule(@RequestBody @Valid ScheduleRequestDto scheduleRequestDto){
+        try{
+            combineService.deleteSchedule(scheduleRequestDto.getScheduleId());
+            return ResponseDto.builder().code(200).message("delete success").build();
+        }catch(RuntimeException e){
+            log.error(e.getMessage());
+            return ResponseDto.builder().code(404).message("delete fail").build();
+        }
+    }
 }

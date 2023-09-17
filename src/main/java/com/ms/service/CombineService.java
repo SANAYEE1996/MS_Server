@@ -36,4 +36,8 @@ public class CombineService {
     public List<ScheduleDto> findScheduleForMonth(ScheduleRequestDto scheduleRequestDto) throws RuntimeException{
         return scheduleFindService.findScheduleForMonth(scheduleRequestDto);
     }
+
+    public void deleteSchedule(Long schedule_id){
+        scheduleService.delete(schedule_id);
+    }
 }
