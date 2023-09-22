@@ -14,13 +14,12 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CombineService {
 
-    private final ValidationCheck validationCheck;
-
     private final Converter converter;
 
     public void saveSchedule(ScheduleDto scheduleDto) throws RuntimeException{
-        validationCheck.checkDate(scheduleDto);
-        validationCheck.checkTime(scheduleDto);
+        ScheduleValidationCheck scheduleValidationCheck = new ScheduleValidationCheck(scheduleDto);
+        scheduleValidationCheck.checkDate();
+        scheduleValidationCheck.checkTime();
 
     }
 
