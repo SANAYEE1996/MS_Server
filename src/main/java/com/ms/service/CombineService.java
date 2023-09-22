@@ -17,9 +17,7 @@ public class CombineService {
     private final Converter converter;
 
     public void saveSchedule(ScheduleDto scheduleDto) throws RuntimeException{
-        ScheduleValidationCheck scheduleValidationCheck = new ScheduleValidationCheck(scheduleDto);
-        scheduleValidationCheck.checkDate();
-        scheduleValidationCheck.checkTime();
+        ScheduleValidationCheck.getInstance(scheduleDto).check();
 
     }
 
