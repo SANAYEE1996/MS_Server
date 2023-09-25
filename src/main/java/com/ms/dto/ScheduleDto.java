@@ -74,7 +74,6 @@ public class ScheduleDto {
     @NotNull(message = "endMin must not Null")
     private Integer endMin;
 
-    @NotBlank(message = "location must not Null")
     private String location;
 
     @NotBlank(message = "title must not Null")
