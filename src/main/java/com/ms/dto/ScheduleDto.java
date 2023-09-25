@@ -6,19 +6,23 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ScheduleDto {
 
-    private Long calendarId;
+    private Long scheduleId;
 
     @NotNull(message = "memberId must not Null")
     private Long memberId;
 
     @NotNull(message = "memberId must not Null")
     private Long colorId;
+
+    private String colorName;
 
     @Max(2100)
     @Min(1900)
@@ -70,9 +74,38 @@ public class ScheduleDto {
     @NotNull(message = "endMin must not Null")
     private Integer endMin;
 
+    @NotBlank(message = "location must not Null")
+    private String location;
+
     @NotBlank(message = "title must not Null")
     private String title;
 
     @NotBlank(message = "note must not Null")
     private String note;
+
+    private List<NotificationDto> notificationDtoList;
+
+    public ScheduleDto(Long scheduleId, Long memberId, Long colorId, String colorName, Integer startYear, Integer startMonth, Integer startDay, Integer startHour, Integer startMin, Integer endYear, Integer endMonth, Integer endDay, Integer endHour, Integer endMin, String location, String title, String note) {
+        this.scheduleId = scheduleId;
+        this.memberId = memberId;
+        this.colorId = colorId;
+        this.colorName = colorName;
+        this.startYear = startYear;
+        this.startMonth = startMonth;
+        this.startDay = startDay;
+        this.startHour = startHour;
+        this.startMin = startMin;
+        this.endYear = endYear;
+        this.endMonth = endMonth;
+        this.endDay = endDay;
+        this.endHour = endHour;
+        this.endMin = endMin;
+        this.location = location;
+        this.title = title;
+        this.note = note;
+    }
+
+    public void setNotification(List<NotificationDto> notificationDtoList){
+        this.notificationDtoList = notificationDtoList;
+    }
 }

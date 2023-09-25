@@ -1,5 +1,6 @@
 package com.ms.entity;
 
+import com.ms.dto.ScheduleDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,6 +30,9 @@ public class Schedule {
     @Column(name = "start_month")
     private Integer startMonth;
 
+    @Column(name= "start_day")
+    private Integer startDay;
+
     @Column(name = "start_hour")
     private Integer startHour;
 
@@ -40,6 +44,9 @@ public class Schedule {
 
     @Column(name = "end_month")
     private Integer endMonth;
+
+    @Column(name= "end_day")
+    private Integer endDay;
 
     @Column(name = "end_hour")
     private Integer endHour;
@@ -56,21 +63,20 @@ public class Schedule {
     @Column(name = "note")
     private String note;
 
-    public Schedule(Long id, Color color, Long memberId, Integer startYear, Integer startMonth, Integer startHour, Integer startMin, Integer endYear, Integer endMonth, Integer endHour, Integer endMin, String location, String title, String note) {
-        this.id = id;
+    public Schedule(Color color, ScheduleDto scheduleDto) {
         this.color = color;
-        this.memberId = memberId;
-        this.startYear = startYear;
-        this.startMonth = startMonth;
-        this.startHour = startHour;
-        this.startMin = startMin;
-        this.endYear = endYear;
-        this.endMonth = endMonth;
-        this.endHour = endHour;
-        this.endMin = endMin;
-        this.location = location;
-        this.title = title;
-        this.note = note;
+        this.memberId = scheduleDto.getMemberId();
+        this.startYear = scheduleDto.getStartYear();
+        this.startMonth = scheduleDto.getStartMonth();
+        this.startHour = scheduleDto.getStartHour();
+        this.startMin = scheduleDto.getStartMin();
+        this.endYear = scheduleDto.getEndYear();
+        this.endMonth = scheduleDto.getEndMonth();
+        this.endHour = scheduleDto.getEndHour();
+        this.endMin = scheduleDto.getEndMin();
+        this.location = scheduleDto.getLocation();
+        this.title = scheduleDto.getTitle();
+        this.note = scheduleDto.getNote();
     }
 
     @OneToMany(mappedBy = "schedule")
