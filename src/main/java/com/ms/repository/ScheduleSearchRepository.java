@@ -1,12 +1,15 @@
 package com.ms.repository;
 
 import com.ms.dto.ScheduleDto;
+import com.ms.dto.ScheduleRequestDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
+
+import java.util.List;
 
 import static com.ms.entity.QSchedule.schedule;
 import static com.ms.entity.QColor.color;
@@ -22,7 +25,21 @@ public class ScheduleSearchRepository extends QuerydslRepositorySupport {
         this.queryFactory = queryFactory;
     }
 
-    private JPAQuery<ScheduleDto> listInitial(Long scheduleId){
+    public ScheduleDto findScheduleListForDay(ScheduleRequestDto scheduleRequestDto){
+        return listInitial()
+               .where(schedule.id.eq(scheduleRequestDto.getScheduleId()))
+               .fetchOne();
+    }
+
+    public List<ScheduleDto> findScheduleListForMonth(ScheduleRequestDto scheduleRequestDto){
+        return listInitial()
+                .where(schedule.memberId.eq(scheduleRequestDto.getMemberId())
+                        .and(schedule.startYear.eq(scheduleRequestDto.getYear()).or(schedule.endYear.eq(scheduleRequestDto.getYear())))
+                        .and(schedule.startMonth.eq(scheduleRequestDto.getMonth()).or(schedule.endMonth.eq(scheduleRequestDto.getMonth()))))
+               .fetch();
+    }
+
+    private JPAQuery<ScheduleDto> listInitial(){
         return queryFactory.select(Projections.constructor(ScheduleDto.class,
                         schedule.id.as("scheduleId"),
                         schedule.memberId.as("memberId"),
@@ -43,7 +60,6 @@ public class ScheduleSearchRepository extends QuerydslRepositorySupport {
                         schedule.note.as("note")
                 ))
                 .from(schedule)
-                .innerJoin(schedule.color, color)
-                .where(schedule.id.eq(scheduleId));
+                .innerJoin(schedule.color, color);
     }
 }

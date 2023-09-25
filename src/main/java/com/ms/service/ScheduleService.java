@@ -16,4 +16,8 @@ public class ScheduleService {
     public Long save(Schedule schedule){
         return scheduleRepository.save(schedule).getId();
     }
+
+    public boolean isExistedSchedule(Long scheduleId){
+        return scheduleRepository.existsById(scheduleId);
+    }
 }

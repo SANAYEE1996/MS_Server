@@ -1,7 +1,6 @@
 package com.ms.repository;
 
 import com.ms.dto.NotificationDto;
-import com.ms.entity.Notification;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;

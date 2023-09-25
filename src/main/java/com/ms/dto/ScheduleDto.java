@@ -85,7 +85,7 @@ public class ScheduleDto {
 
     private List<NotificationDto> notificationDtoList;
 
-    public ScheduleDto(Long scheduleId, @NotNull(message = "memberId must not Null") Long memberId, @NotNull(message = "memberId must not Null") Long colorId, String colorName, @NotNull(message = "start Year must not Null") Integer startYear, @NotNull(message = "start Month must not Null") Integer startMonth, @NotNull(message = "start Day must not Null") Integer startDay, @NotNull(message = "startHour must not Null") Integer startHour, @NotNull(message = "startMin must not Null") Integer startMin, @NotNull(message = "endYear must not Null") Integer endYear, @NotNull(message = "endMonth must not Null") Integer endMonth, @NotNull(message = "end Day must not Null") Integer endDay, @NotNull(message = "endHour must not Null") Integer endHour, @NotNull(message = "endMin must not Null") Integer endMin, String location, String title, String note) {
+    public ScheduleDto(Long scheduleId, Long memberId, Long colorId, String colorName, Integer startYear, Integer startMonth, Integer startDay, Integer startHour, Integer startMin, Integer endYear, Integer endMonth, Integer endDay, Integer endHour, Integer endMin, String location, String title, String note) {
         this.scheduleId = scheduleId;
         this.memberId = memberId;
         this.colorId = colorId;
@@ -103,5 +103,9 @@ public class ScheduleDto {
         this.location = location;
         this.title = title;
         this.note = note;
+    }
+
+    public void setNotification(List<NotificationDto> notificationDtoList){
+        this.notificationDtoList = notificationDtoList;
     }
 }
