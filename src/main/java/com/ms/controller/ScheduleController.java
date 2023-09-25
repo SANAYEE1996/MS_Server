@@ -42,6 +42,18 @@ public class ScheduleController {
         }
     }
 
+    @PostMapping(value = "/day")
+    public ResponseDto findDay(@RequestBody @Valid ScheduleRequestDto scheduleRequestDto){
+        try{
+            if(scheduleRequestDto.getScheduleId() == null) throw new RuntimeException("scheduleId must not be null");
+            return ResponseDto.builder().code(200).message("find success").body(new ResponseBody<>(combineService.findScheduleForDay(scheduleRequestDto))).build();
+        }catch(RuntimeException e){
+            log.error(e.getMessage());
+            return ResponseDto.builder().code(404).message("fail").build();
+        }
+    }
+
+
     @PostMapping(value = "/delete")
     public ResponseDto deleteSchedule(@RequestBody @Valid ScheduleRequestDto scheduleRequestDto){
         try{

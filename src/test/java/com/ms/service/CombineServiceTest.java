@@ -19,9 +19,9 @@ public class CombineServiceTest {
         ScheduleDto scheduleDto = ScheduleDto
                 .builder()
                 .memberId(2L)
-                .year(2023)
-                .month(5)
-                .day(26)
+                .startYear(2023)
+                .startMonth(5)
+                .startMonth(26)
                 .startHour(10)
                 .startMin(0)
                 .endHour(11)
@@ -41,7 +41,7 @@ public class CombineServiceTest {
 
         System.out.println("is Empty???? "+scheduleDtoList.isEmpty());
         for(ScheduleDto scheduleDto : scheduleDtoList){
-            System.out.println(scheduleDto.getCalendarId()+" "+ scheduleDto.getMemberId()+" "+scheduleDto.getTitle() + " " +scheduleDto.getNote());
+            System.out.println(scheduleDto.getStartYear()+" "+ scheduleDto.getMemberId()+" "+scheduleDto.getTitle() + " " +scheduleDto.getNote());
         }
 
     }

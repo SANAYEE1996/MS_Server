@@ -32,7 +32,16 @@ public class ScheduleValidationCheck {
         this.endMin = timeDto.getEndMin();
     }
 
-    public void checkDate() throws RuntimeException{
+    public static ScheduleValidationCheck getInstance(ScheduleDto timeDto){
+        return new ScheduleValidationCheck(timeDto);
+    }
+
+    public void check() throws RuntimeException{
+        checkDate();
+        checkTime();
+    }
+
+    private void checkDate() throws RuntimeException{
         checkDate(startMonth, startDay, isLeapYear(startYear));
         checkDate(endMonth, endDay, isLeapYear(endYear));
     }
@@ -51,7 +60,7 @@ public class ScheduleValidationCheck {
         }
     }
 
-    public void checkTime() throws RuntimeException{
+    private void checkTime() throws RuntimeException{
         if(startYear < endYear){
             return;
         }
