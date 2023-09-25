@@ -19,9 +19,9 @@ public class CombineServiceTest {
         ScheduleDto scheduleDto = ScheduleDto
                 .builder()
                 .memberId(2L)
-                .year(2023)
-                .month(5)
-                .day(26)
+                .startYear(2023)
+                .startMonth(5)
+                .startMonth(26)
                 .startHour(10)
                 .startMin(0)
                 .endHour(11)

@@ -6,19 +6,23 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ScheduleDto {
 
-    private Long calendarId;
+    private Long scheduleId;
 
     @NotNull(message = "memberId must not Null")
     private Long memberId;
 
     @NotNull(message = "memberId must not Null")
     private Long colorId;
+
+    private String colorName;
 
     @Max(2100)
     @Min(1900)
@@ -78,4 +82,26 @@ public class ScheduleDto {
 
     @NotBlank(message = "note must not Null")
     private String note;
+
+    private List<NotificationDto> notificationDtoList;
+
+    public ScheduleDto(Long scheduleId, @NotNull(message = "memberId must not Null") Long memberId, @NotNull(message = "memberId must not Null") Long colorId, String colorName, @NotNull(message = "start Year must not Null") Integer startYear, @NotNull(message = "start Month must not Null") Integer startMonth, @NotNull(message = "start Day must not Null") Integer startDay, @NotNull(message = "startHour must not Null") Integer startHour, @NotNull(message = "startMin must not Null") Integer startMin, @NotNull(message = "endYear must not Null") Integer endYear, @NotNull(message = "endMonth must not Null") Integer endMonth, @NotNull(message = "end Day must not Null") Integer endDay, @NotNull(message = "endHour must not Null") Integer endHour, @NotNull(message = "endMin must not Null") Integer endMin, String location, String title, String note) {
+        this.scheduleId = scheduleId;
+        this.memberId = memberId;
+        this.colorId = colorId;
+        this.colorName = colorName;
+        this.startYear = startYear;
+        this.startMonth = startMonth;
+        this.startDay = startDay;
+        this.startHour = startHour;
+        this.startMin = startMin;
+        this.endYear = endYear;
+        this.endMonth = endMonth;
+        this.endDay = endDay;
+        this.endHour = endHour;
+        this.endMin = endMin;
+        this.location = location;
+        this.title = title;
+        this.note = note;
+    }
 }

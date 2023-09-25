@@ -30,6 +30,9 @@ public class Schedule {
     @Column(name = "start_month")
     private Integer startMonth;
 
+    @Column(name= "start_day")
+    private Integer startDay;
+
     @Column(name = "start_hour")
     private Integer startHour;
 
@@ -41,6 +44,9 @@ public class Schedule {
 
     @Column(name = "end_month")
     private Integer endMonth;
+
+    @Column(name= "end_day")
+    private Integer endDay;
 
     @Column(name = "end_hour")
     private Integer endHour;
