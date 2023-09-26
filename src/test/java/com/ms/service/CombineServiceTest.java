@@ -19,8 +19,8 @@ public class CombineServiceTest {
     @Test
     void saveTest(){
         List<NotificationDto> notificationDtoList = new ArrayList<>();
-        notificationDtoList.add(NotificationDto.builder().name("1시간전").build());
-        notificationDtoList.add(NotificationDto.builder().name("1일전").build());
+        notificationDtoList.add(NotificationDto.builder().build());
+        notificationDtoList.add(NotificationDto.builder().build());
         ScheduleDto scheduleDto = ScheduleDto
                 .builder()
                 .memberId(2L)

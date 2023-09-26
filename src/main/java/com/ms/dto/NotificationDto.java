@@ -1,6 +1,7 @@
 package com.ms.dto;
 
-import jakarta.validation.constraints.NotBlank;
+import com.ms.entity.NotificationType;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,8 +17,11 @@ public class NotificationDto {
 
     private Long scheduleId;
 
-    @NotBlank(message = "name must not Null")
-    private String name;
+    @NotNull(message = "유효하지 않은 type 값")
+    private NotificationType type;
+
+    @NotNull(message = "value must not Null")
+    private Integer value;
 
     private String notificationTime;
 

@@ -19,6 +19,6 @@ public class Converter {
     }
 
     private NotificationDto toNotificationDto(Notification notification){
-        return new NotificationDto(notification.getId(), notification.getSchedule().getId(), notification.getName(), notification.getTime());
+        return new NotificationDto(notification.getId(), notification.getSchedule().getId(), notification.getNotificationType(), notification.getValue(), notification.getTime());
     }
 }
