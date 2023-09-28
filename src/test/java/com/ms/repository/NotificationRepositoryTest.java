@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest
-public class notificationRepositoryTest {
+public class NotificationRepositoryTest {
 
     @Autowired
     private NotificationBulkRepository notificationBulkRepository;
