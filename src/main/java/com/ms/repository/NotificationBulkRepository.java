@@ -17,7 +17,7 @@ public class NotificationBulkRepository {
 
     @Transactional
     public void saveAll(List<NotificationDto> notificationList){
-        String sql = "INSERT INTO notification (schedule_id, name, notificate_time) " +
+        String sql = "INSERT INTO notification (schedule_id, type, value, notificate_time) " +
                      "VALUES (?, ?, ?, ?) ";
 
         jdbcTemplate.batchUpdate(sql,
@@ -25,8 +25,9 @@ public class NotificationBulkRepository {
                 notificationList.size(),
                 (PreparedStatement ps, NotificationDto notificationDto) -> {
                     ps.setLong(1, notificationDto.getScheduleId());
-                    ps.setString(2, notificationDto.getName());
-                    ps.setString(3, notificationDto.getNotificationTime());
+                    ps.setString(2, notificationDto.getType().getType());
+                    ps.setInt(3, notificationDto.getValue());
+                    ps.setString(4, notificationDto.getNotificationTime());
                 });
     }
 }

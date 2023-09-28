@@ -17,8 +17,12 @@ public class Notification {
     @JoinColumn(name = "schedule_id")
     private Schedule schedule;
 
-    @Column(name = "name")
-    private String name;
+    @Column(name = "type")
+    @Enumerated(EnumType.STRING)
+    private NotificationType notificationType;
+
+    @Column(name = "value")
+    private Integer value;
 
     @Column(name = "notificate_time")
     private String time;
