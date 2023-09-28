@@ -8,13 +8,19 @@ import org.springframework.stereotype.Repository;
 @Slf4j
 @Repository
 @RequiredArgsConstructor
-public class ScheduleNativeRepository {
+public class NativeRepository {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public void deleteById(Long schedule_id){
+    public void deleteNotificationByScheduleId(Long scheduleId){
+        String sql = "DELETE FROM notification WHERE schedule_id = ? ";
+
+        jdbcTemplate.update(sql, scheduleId);
+    }
+
+    public void deleteScheduleById(Long scheduleId){
         String sql = "DELETE FROM schedule WHERE ID = ? ";
 
-        jdbcTemplate.update(sql, schedule_id);
+        jdbcTemplate.update(sql, scheduleId);
     }
 }

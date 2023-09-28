@@ -1,13 +1,24 @@
 package com.ms.service;
 
-import com.ms.dto.ScheduleDto;
-import com.ms.entity.Calendar;
-import org.springframework.stereotype.Service;
+import com.ms.dto.NotificationDto;
+import com.ms.entity.Notification;
+import org.springframework.stereotype.Component;
 
-@Service
+import java.util.ArrayList;
+import java.util.List;
+
+@Component
 public class Converter {
 
-    public Calendar toCalendar(ScheduleDto calendarDto){
-        return new Calendar(0L, calendarDto.getMemberId(), calendarDto.getYear(), calendarDto.getMonth(), calendarDto.getDay());
+    public List<NotificationDto> toNotificationDtoList(List<Notification> notificationList){
+        List<NotificationDto> notificationDtoList = new ArrayList<>();
+        for(Notification notification : notificationList){
+            notificationDtoList.add(toNotificationDto(notification));
+        }
+        return notificationDtoList;
+    }
+
+    private NotificationDto toNotificationDto(Notification notification){
+        return new NotificationDto(notification.getId(), notification.getSchedule().getId(), notification.getNotificationType(), notification.getValue(), notification.getTime());
     }
 }
