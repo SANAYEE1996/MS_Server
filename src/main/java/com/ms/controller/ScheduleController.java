@@ -64,4 +64,15 @@ public class ScheduleController {
             return ResponseDto.builder().code(404).message("delete fail").build();
         }
     }
+
+    @PostMapping(value = "/update")
+    public ResponseDto update(@RequestBody @Valid ScheduleDto scheduleDto){
+        try {
+            combineService.updateSchedule(scheduleDto);
+        }catch (RuntimeException e){
+            log.error(e.getMessage());
+            return ResponseDto.builder().code(404).message("save fail").build();
+        }
+        return ResponseDto.builder().code(200).message("save success").build();
+    }
 }
