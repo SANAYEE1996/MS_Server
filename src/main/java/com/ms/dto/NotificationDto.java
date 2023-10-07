@@ -2,15 +2,13 @@ package com.ms.dto;
 
 import com.ms.entity.NotificationType;
 import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class NotificationDto {
 
     private Long id;
