@@ -75,4 +75,10 @@ public class CombineServiceTest {
 
         combineService.deleteSchedule(schedule_id);
     }
+
+    @Test
+    void updateTest(){
+
+
+    }
 }
