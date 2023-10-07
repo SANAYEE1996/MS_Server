@@ -56,4 +56,8 @@ public class CombineService {
         nativeRepository.deleteNotificationByScheduleId(schedule_id);
         nativeRepository.deleteScheduleById(schedule_id);
     }
+
+    public void updateSchedule(ScheduleDto scheduleDto) throws RuntimeException{
+
+    }
 }
