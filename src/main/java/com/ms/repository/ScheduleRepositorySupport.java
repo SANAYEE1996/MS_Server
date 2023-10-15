@@ -2,12 +2,17 @@ package com.ms.repository;
 
 import com.ms.dto.ScheduleDto;
 import com.ms.dto.ScheduleRequestDto;
+import com.querydsl.core.dml.UpdateClause;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.querydsl.jpa.impl.JPAUpdateClause;
+import jakarta.transaction.Transactional;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.support.QuerydslRepositorySupport;
 import org.springframework.stereotype.Repository;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -16,11 +21,11 @@ import static com.ms.entity.QColor.color;
 
 @Slf4j
 @Repository
-public class ScheduleSearchRepository extends QuerydslRepositorySupport {
+public class ScheduleRepositorySupport extends QuerydslRepositorySupport {
 
     private final JPAQueryFactory queryFactory;
 
-    public ScheduleSearchRepository(JPAQueryFactory queryFactory){
+    public ScheduleRepositorySupport(JPAQueryFactory queryFactory){
         super(ScheduleDto.class);
         this.queryFactory = queryFactory;
     }
@@ -37,6 +42,14 @@ public class ScheduleSearchRepository extends QuerydslRepositorySupport {
                         .and(schedule.startYear.eq(scheduleRequestDto.getYear()).or(schedule.endYear.eq(scheduleRequestDto.getYear())))
                         .and(schedule.startMonth.eq(scheduleRequestDto.getMonth()).or(schedule.endMonth.eq(scheduleRequestDto.getMonth()))))
                .fetch();
+    }
+
+    @Modifying
+    @Transactional
+    public void updateSchedule(ScheduleDto scheduleDto){
+        UpdateClause<JPAUpdateClause> builder = update(schedule);
+        updateSetting(scheduleDto,builder);
+        builder.where(schedule.id.eq(scheduleDto.getScheduleId())).execute();
     }
 
     private JPAQuery<ScheduleDto> listInitial(){
@@ -61,5 +74,25 @@ public class ScheduleSearchRepository extends QuerydslRepositorySupport {
                 ))
                 .from(schedule)
                 .innerJoin(schedule.color, color);
+    }
+
+    private void updateSetting(ScheduleDto scheduleDto, UpdateClause<JPAUpdateClause> builder){
+        builder.set(schedule.color.id, scheduleDto.getColorId());
+        builder.set(schedule.memberId, scheduleDto.getMemberId());
+        builder.set(schedule.startYear, scheduleDto.getStartYear());
+        builder.set(schedule.startMonth, scheduleDto.getStartMonth());
+        builder.set(schedule.startDay, scheduleDto.getStartDay());
+        builder.set(schedule.startHour, scheduleDto.getStartHour());
+        builder.set(schedule.startMin, scheduleDto.getStartMin());
+        builder.set(schedule.endYear, scheduleDto.getEndYear());
+        builder.set(schedule.endMonth, scheduleDto.getEndMonth());
+        builder.set(schedule.endDay, scheduleDto.getEndDay());
+        builder.set(schedule.endHour, scheduleDto.getEndHour());
+        builder.set(schedule.endMin, scheduleDto.getEndMin());
+        builder.set(schedule.title, scheduleDto.getTitle());
+        builder.set(schedule.note, scheduleDto.getNote());
+        if(StringUtils.hasText(scheduleDto.getLocation())){
+            builder.set(schedule.location, scheduleDto.getLocation());
+        }
     }
 }

@@ -19,7 +19,7 @@ public class CombineService {
 
     private final ScheduleService scheduleService;
 
-    private final ScheduleSearchService scheduleSearchService;
+    private final ScheduleSupportService scheduleSupportService;
 
     private final NotificationService notificationService;
 
@@ -42,13 +42,13 @@ public class CombineService {
     }
 
     public ScheduleDto findScheduleForDay(ScheduleRequestDto scheduleRequestDto) throws RuntimeException{
-        ScheduleDto scheduleDto = scheduleSearchService.findScheduleForDay(scheduleRequestDto);
+        ScheduleDto scheduleDto = scheduleSupportService.findScheduleForDay(scheduleRequestDto);
         scheduleDto.setNotification(converter.toNotificationDtoList(notificationService.getNotificationList(scheduleRequestDto.getScheduleId())));
         return scheduleDto;
     }
 
     public List<ScheduleDto> findScheduleForMonth(ScheduleRequestDto scheduleRequestDto) throws RuntimeException{
-        return scheduleSearchService.findScheduleForMonth(scheduleRequestDto);
+        return scheduleSupportService.findScheduleForMonth(scheduleRequestDto);
     }
 
     public void deleteSchedule(Long schedule_id) throws RuntimeException{
@@ -58,6 +58,13 @@ public class CombineService {
     }
 
     public void updateSchedule(ScheduleDto scheduleDto) throws RuntimeException{
-
+        ScheduleValidationCheck.getInstance(scheduleDto).check();
+        List<NotificationDto> notificationDtoList = scheduleDto.getNotificationDtoList();
+        for(NotificationDto notificationDto : notificationDtoList){
+            notificationDto.setScheduleId(scheduleDto.getScheduleId());
+        }
+        scheduleSupportService.updateSchedule(scheduleDto);
+        notificationService.deleteByScheduleId(scheduleDto.getScheduleId());
+        notificationService.saveAll(notificationDtoList);
     }
 }
