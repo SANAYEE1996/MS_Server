@@ -3,12 +3,15 @@ package com.ms.service;
 import com.ms.dto.NotificationDto;
 import com.ms.dto.ScheduleDto;
 import com.ms.dto.ScheduleRequestDto;
+import com.ms.entity.NotificationType;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @SpringBootTest
 public class CombineServiceTest {
@@ -78,7 +81,6 @@ public class CombineServiceTest {
 
     @Test
     void updateTest(){
-
 
     }
 }
