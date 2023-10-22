@@ -68,6 +68,7 @@ public class ScheduleController {
     @PostMapping(value = "/update")
     public ResponseDto update(@RequestBody @Valid ScheduleDto scheduleDto){
         try {
+            if(scheduleDto.getScheduleId() == null) throw new RuntimeException("scheduleId is null");
             combineService.updateSchedule(scheduleDto);
         }catch (RuntimeException e){
             log.error(e.getMessage());
