@@ -26,4 +26,8 @@ public class NotificationService {
     public List<Notification> getNotificationList(Long scheduleId){
         return notificationRepository.findAllByMyWay(scheduleId);
     }
+
+    public void deleteByScheduleId(Long scheduleId){
+        notificationRepository.deleteForUpdateByScheduleId(scheduleId);
+    }
 }
