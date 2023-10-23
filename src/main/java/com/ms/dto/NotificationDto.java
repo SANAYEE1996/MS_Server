@@ -8,7 +8,6 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class NotificationDto {
 
     private Long id;
@@ -22,8 +21,4 @@ public class NotificationDto {
     private Integer value;
 
     private String notificationTime;
-
-    public void setScheduleId(Long scheduleId){
-        this.scheduleId = scheduleId;
-    }
 }

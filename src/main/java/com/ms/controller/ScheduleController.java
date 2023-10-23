@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.ParseException;
+
 @Slf4j
 @RestController
 @RequiredArgsConstructor
@@ -25,7 +27,7 @@ public class ScheduleController {
     public ResponseDto save(@RequestBody @Valid ScheduleDto scheduleDto){
         try {
             combineService.saveSchedule(scheduleDto);
-        }catch (RuntimeException e){
+        }catch (RuntimeException | ParseException e){
             log.error(e.getMessage());
             return ResponseDto.builder().code(404).message("save fail").build();
         }
@@ -70,7 +72,7 @@ public class ScheduleController {
         try {
             if(scheduleDto.getScheduleId() == null) throw new RuntimeException("scheduleId is null");
             combineService.updateSchedule(scheduleDto);
-        }catch (RuntimeException e){
+        }catch (RuntimeException | ParseException e){
             log.error(e.getMessage());
             return ResponseDto.builder().code(404).message("save fail").build();
         }

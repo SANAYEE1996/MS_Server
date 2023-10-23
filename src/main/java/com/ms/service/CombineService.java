@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -29,14 +31,24 @@ public class CombineService {
 
     private final Converter converter;
 
-    public void saveSchedule(ScheduleDto scheduleDto) throws RuntimeException{
+    private TimeCalculateService timeCalculateService;
+
+    public void saveSchedule(ScheduleDto scheduleDto) throws RuntimeException, ParseException {
         ScheduleValidationCheck.getInstance(scheduleDto).check();
         Color color = colorService.findColor(scheduleDto.getColorId());
         Schedule schedule = new Schedule(color, scheduleDto);
         Long scheduleId = scheduleService.save(schedule);
-        List<NotificationDto> notificationDtoList = scheduleDto.getNotificationDtoList();
-        for(NotificationDto notificationDto : notificationDtoList){
-            notificationDto.setScheduleId(scheduleId);
+        List<NotificationDto> inputNotificationList = scheduleDto.getNotificationDtoList();
+        List<NotificationDto> notificationDtoList = new ArrayList<>();
+        timeCalculateService = new TimeCalculateService(scheduleDto);
+        for(NotificationDto notificationDto : inputNotificationList){
+            notificationDtoList.add(NotificationDto
+                                    .builder()
+                                    .scheduleId(scheduleId)
+                                    .type(notificationDto.getType())
+                                    .value(notificationDto.getValue())
+                                    .notificationTime(timeCalculateService.getTime(notificationDto.getType(), notificationDto.getValue()))
+                                    .build());
         }
         notificationService.saveAll(notificationDtoList);
     }
@@ -57,11 +69,19 @@ public class CombineService {
         nativeRepository.deleteScheduleById(schedule_id);
     }
 
-    public void updateSchedule(ScheduleDto scheduleDto) throws RuntimeException{
+    public void updateSchedule(ScheduleDto scheduleDto) throws RuntimeException, ParseException{
         ScheduleValidationCheck.getInstance(scheduleDto).check();
-        List<NotificationDto> notificationDtoList = scheduleDto.getNotificationDtoList();
-        for(NotificationDto notificationDto : notificationDtoList){
-            notificationDto.setScheduleId(scheduleDto.getScheduleId());
+        List<NotificationDto> inputNotificationList = scheduleDto.getNotificationDtoList();
+        List<NotificationDto> notificationDtoList = new ArrayList<>();
+        timeCalculateService = new TimeCalculateService(scheduleDto);
+        for(NotificationDto notificationDto : inputNotificationList){
+            notificationDtoList.add(NotificationDto
+                                    .builder()
+                                    .scheduleId(scheduleDto.getScheduleId())
+                                    .type(notificationDto.getType())
+                                    .value(notificationDto.getValue())
+                                    .notificationTime(timeCalculateService.getTime(notificationDto.getType(), notificationDto.getValue()))
+                                    .build());
         }
         scheduleSupportService.updateSchedule(scheduleDto);
         notificationService.deleteByScheduleId(scheduleDto.getScheduleId());
