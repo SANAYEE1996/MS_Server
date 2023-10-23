@@ -81,6 +81,35 @@ public class CombineServiceTest {
 
     @Test
     void updateTest(){
+        List<NotificationDto> notificationDtoList = new ArrayList<>();
+        notificationDtoList.add(NotificationDto.builder().scheduleId(2L).type(NotificationType.MIN).value(3).notificationTime("2023-10-25 18:57").build());
+        notificationDtoList.add(NotificationDto.builder().scheduleId(2L).type(NotificationType.HOUR).value(1).notificationTime("2023-10-25 18:00").build());
+        ScheduleDto scheduleDto = ScheduleDto
+                .builder()
+                .scheduleId(2L)
+                .colorId(1L)
+                .startYear(2023)
+                .startMonth(10)
+                .startDay(25)
+                .startHour(19)
+                .startMin(00)
+                .endYear(2023)
+                .endMonth(10)
+                .endDay(25)
+                .endHour(21)
+                .endMin(10)
+                .title("세미나")
+                .note("자바 세미나")
+                .notificationDtoList(notificationDtoList)
+                .build();
 
+        combineService.updateSchedule(scheduleDto);
+
+        ScheduleRequestDto scheduleRequestDto = ScheduleRequestDto.builder().scheduleId(2L).build();
+
+        ScheduleDto respectSchedule = combineService.findScheduleForDay(scheduleRequestDto);
+
+        assertThat(scheduleDto.getTitle()).isEqualTo(respectSchedule.getTitle());
+        assertThat(scheduleDto.getNote()).isEqualTo(respectSchedule.getNote());
     }
 }
