@@ -15,14 +15,15 @@ public class TimeCalculateService {
 
     private String startTime;
     private SimpleDateFormat sdf = new SimpleDateFormat("yyyyMMddHHmm");
+    private SimpleDateFormat resultFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
     public TimeCalculateService(ScheduleDto scheduleDto){
         StringBuilder sb = new StringBuilder();
         sb.append(scheduleDto.getStartYear());
-        sb.append(scheduleDto.getStartMonth());
-        sb.append(scheduleDto.getStartDay());
-        sb.append(scheduleDto.getStartHour());
-        sb.append(scheduleDto.getStartMin());
+        sb.append(scheduleDto.getStartMonth() < 10 ? "0" + scheduleDto.getStartMonth() : scheduleDto.getStartMonth());
+        sb.append(scheduleDto.getStartDay() < 10 ? "0" + scheduleDto.getStartDay() : scheduleDto.getStartDay());
+        sb.append(scheduleDto.getStartHour() < 10 ? "0" + scheduleDto.getStartHour() : scheduleDto.getStartHour());
+        sb.append(scheduleDto.getStartMin() < 10 ? "0" + scheduleDto.getStartMin() : scheduleDto.getStartMin());
         startTime = sb.toString();
     }
 
@@ -35,6 +36,6 @@ public class TimeCalculateService {
             case HOUR -> cal.add(Calendar.HOUR, -value);
             case MIN -> cal.add(Calendar.MINUTE, -value);
         }
-        return sdf.format(cal.getTime());
+        return resultFormat.format(cal.getTime());
     }
 }
