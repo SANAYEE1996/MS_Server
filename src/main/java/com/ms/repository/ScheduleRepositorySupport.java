@@ -78,7 +78,6 @@ public class ScheduleRepositorySupport extends QuerydslRepositorySupport {
 
     private void updateSetting(ScheduleDto scheduleDto, UpdateClause<JPAUpdateClause> builder){
         builder.set(schedule.color.id, scheduleDto.getColorId());
-        builder.set(schedule.memberId, scheduleDto.getMemberId());
         builder.set(schedule.startYear, scheduleDto.getStartYear());
         builder.set(schedule.startMonth, scheduleDto.getStartMonth());
         builder.set(schedule.startDay, scheduleDto.getStartDay());
@@ -91,8 +90,6 @@ public class ScheduleRepositorySupport extends QuerydslRepositorySupport {
         builder.set(schedule.endMin, scheduleDto.getEndMin());
         builder.set(schedule.title, scheduleDto.getTitle());
         builder.set(schedule.note, scheduleDto.getNote());
-        if(StringUtils.hasText(scheduleDto.getLocation())){
-            builder.set(schedule.location, scheduleDto.getLocation());
-        }
+        builder.set(schedule.location, StringUtils.hasText(scheduleDto.getLocation()) ? scheduleDto.getLocation() : "");
     }
 }

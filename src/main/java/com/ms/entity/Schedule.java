@@ -68,10 +68,12 @@ public class Schedule {
         this.memberId = scheduleDto.getMemberId();
         this.startYear = scheduleDto.getStartYear();
         this.startMonth = scheduleDto.getStartMonth();
+        this.startDay = scheduleDto.getStartDay();
         this.startHour = scheduleDto.getStartHour();
         this.startMin = scheduleDto.getStartMin();
         this.endYear = scheduleDto.getEndYear();
         this.endMonth = scheduleDto.getEndMonth();
+        this.endDay = scheduleDto.getEndDay();
         this.endHour = scheduleDto.getEndHour();
         this.endMin = scheduleDto.getEndMin();
         this.location = scheduleDto.getLocation();
