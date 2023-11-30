@@ -29,6 +29,7 @@ ext {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-r2dbc'
     implementation group: 'com.infobip', name: 'infobip-spring-data-r2dbc-querydsl-boot-starter', version: '9.0.2'
+    annotationProcessor group: 'com.infobip', name: 'infobip-spring-data-jdbc-annotation-processor', version: '9.0.2'
     runtimeOnly 'org.mariadb:r2dbc-mariadb'
 
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
