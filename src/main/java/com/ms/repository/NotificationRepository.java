@@ -1,20 +1,18 @@
 package com.ms.repository;
 
 import com.ms.entity.Notification;
-import jakarta.transaction.Transactional;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.r2dbc.repository.Modifying;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import org.springframework.stereotype.Repository;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
 
-import java.util.List;
+@Repository("notificationRepository")
+public interface NotificationRepository extends ReactiveCrudRepository<Notification, Long> {
 
-public interface NotificationRepository extends JpaRepository<Notification, Long> {
+    Flux<Notification> findByScheduleId(Long scheduleId);
 
-    @Query("select n from notification n where n.schedule.id = :scheduleId")
-    List<Notification> findAllByMyWay(Long scheduleId);
-
-    @Transactional
     @Modifying
-    @Query("delete from notification n where n.schedule.id = :scheduleId")
-    void deleteForUpdateByScheduleId(Long scheduleId);
+    Mono<Void> deleteByScheduleId(Long scheduleId);
+
 }
