@@ -1,86 +1,63 @@
 package com.ms.entity;
 
-import com.ms.dto.ScheduleDto;
-import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
-import java.util.ArrayList;
-import java.util.List;
-
-@Entity(name = "schedule")
+@Table(name = "schedule")
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Schedule {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "color_id")
-    private Color color;
+    @Column("color_id")
+    private Long colorId;
 
-    @Column(name = "member_id")
+    @Column("member_id")
     private Long memberId;
 
-    @Column(name = "start_year")
+    @Column("start_year")
     private Integer startYear;
 
-    @Column(name = "start_month")
+    @Column("start_month")
     private Integer startMonth;
 
-    @Column(name= "start_day")
+    @Column("start_day")
     private Integer startDay;
 
-    @Column(name = "start_hour")
+    @Column("start_hour")
     private Integer startHour;
 
-    @Column(name = "start_min")
+    @Column("start_min")
     private Integer startMin;
 
-    @Column(name = "end_year")
+    @Column("end_year")
     private Integer endYear;
 
-    @Column(name = "end_month")
+    @Column("end_month")
     private Integer endMonth;
 
-    @Column(name= "end_day")
+    @Column("end_day")
     private Integer endDay;
 
-    @Column(name = "end_hour")
+    @Column("end_hour")
     private Integer endHour;
 
-    @Column(name = "end_min")
+    @Column("end_min")
     private Integer endMin;
 
-    @Column(name = "location")
+    @Column("location")
     private String location;
 
-    @Column(name = "title")
+    @Column("title")
     private String title;
 
-    @Column(name = "note")
+    @Column("note")
     private String note;
-
-    public Schedule(Color color, ScheduleDto scheduleDto) {
-        this.color = color;
-        this.memberId = scheduleDto.getMemberId();
-        this.startYear = scheduleDto.getStartYear();
-        this.startMonth = scheduleDto.getStartMonth();
-        this.startDay = scheduleDto.getStartDay();
-        this.startHour = scheduleDto.getStartHour();
-        this.startMin = scheduleDto.getStartMin();
-        this.endYear = scheduleDto.getEndYear();
-        this.endMonth = scheduleDto.getEndMonth();
-        this.endDay = scheduleDto.getEndDay();
-        this.endHour = scheduleDto.getEndHour();
-        this.endMin = scheduleDto.getEndMin();
-        this.location = scheduleDto.getLocation();
-        this.title = scheduleDto.getTitle();
-        this.note = scheduleDto.getNote();
-    }
-
-    @OneToMany(mappedBy = "schedule")
-    private List<Notification> notificationList = new ArrayList<>();
 }

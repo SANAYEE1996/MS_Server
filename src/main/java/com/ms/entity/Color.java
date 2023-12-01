@@ -1,25 +1,23 @@
 package com.ms.entity;
 
-import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
-import java.util.ArrayList;
-import java.util.List;
-
-@Entity(name = "color")
+@Table(name = "color")
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Color {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column("id")
     private Long id;
 
-    @Column(name = "name")
+    @Column("name")
     private String name;
-
-    @OneToMany(mappedBy = "color")
-    private List<Schedule> scheduleList = new ArrayList<>();
 
 }

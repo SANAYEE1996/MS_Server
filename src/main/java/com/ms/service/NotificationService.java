@@ -1,12 +1,11 @@
 package com.ms.service;
 
-import com.ms.dto.NotificationDto;
 import com.ms.entity.Notification;
-import com.ms.repository.NotificationBulkRepository;
 import com.ms.repository.NotificationRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
 
 import java.util.List;
 
@@ -17,17 +16,16 @@ public class NotificationService {
 
     private final NotificationRepository notificationRepository;
 
-    private final NotificationBulkRepository notificationBulkRepository;
-
-    public void saveAll(List<NotificationDto> notificationDtoList){
-        notificationBulkRepository.saveAll(notificationDtoList);
+    public Mono<String> saveAll(List<Notification> notificationList){
+        return notificationRepository.saveAll(notificationList).collectList()
+                .flatMap(s -> Mono.just("notification save success"));
     }
 
-    public List<Notification> getNotificationList(Long scheduleId){
-        return notificationRepository.findAllByMyWay(scheduleId);
+    public Mono<List<Notification>> getNotificationList(Long scheduleId){
+        return notificationRepository.findByScheduleId(scheduleId).collectList();
     }
 
-    public void deleteByScheduleId(Long scheduleId){
-        notificationRepository.deleteForUpdateByScheduleId(scheduleId);
+    public Mono<Void> deleteByScheduleId(Long scheduleId){
+        return notificationRepository.deleteByScheduleId(scheduleId);
     }
 }

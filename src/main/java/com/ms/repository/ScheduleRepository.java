@@ -1,7 +1,9 @@
 package com.ms.repository;
 
 import com.ms.entity.Schedule;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.repository.reactive.ReactiveCrudRepository;
+import org.springframework.stereotype.Repository;
 
-public interface ScheduleRepository extends JpaRepository<Schedule, Long> {
+@Repository("scheduleRepository")
+public interface ScheduleRepository extends ReactiveCrudRepository<Schedule, Long> {
 }

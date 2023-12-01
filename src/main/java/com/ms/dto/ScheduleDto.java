@@ -9,7 +9,6 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
 public class ScheduleDto {
 
     private Long scheduleId;
@@ -82,7 +81,7 @@ public class ScheduleDto {
 
     private List<NotificationDto> notificationDtoList;
 
-    public ScheduleDto(Long scheduleId, Long memberId, Long colorId, String colorName, Integer startYear, Integer startMonth, Integer startDay, Integer startHour, Integer startMin, Integer endYear, Integer endMonth, Integer endDay, Integer endHour, Integer endMin, String location, String title, String note) {
+    public ScheduleDto(Long scheduleId, @NotNull Long memberId, @NotNull Long colorId, String colorName, @NotNull Integer startYear, @NotNull Integer startMonth, @NotNull Integer startDay, @NotNull Integer startHour, @NotNull Integer startMin, @NotNull Integer endYear, @NotNull Integer endMonth, @NotNull Integer endDay, @NotNull Integer endHour, @NotNull Integer endMin, String location, String title, String note) {
         this.scheduleId = scheduleId;
         this.memberId = memberId;
         this.colorId = colorId;

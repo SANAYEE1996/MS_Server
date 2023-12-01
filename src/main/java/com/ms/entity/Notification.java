@@ -1,29 +1,30 @@
 package com.ms.entity;
 
-import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
-@Entity(name = "notification")
+@Table(name = "notification")
 @Getter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Notification {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "schedule_id")
-    private Schedule schedule;
+    @Column("schedule_id")
+    private Long scheduleId;
 
-    @Column(name = "type")
-    @Enumerated(EnumType.STRING)
+    @Column("type")
     private NotificationType notificationType;
 
-    @Column(name = "value")
+    @Column("value")
     private Integer value;
 
-    @Column(name = "notificate_time")
+    @Column("time")
     private String time;
 }
