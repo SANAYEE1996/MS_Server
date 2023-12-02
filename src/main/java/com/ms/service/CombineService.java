@@ -58,9 +58,10 @@ public class CombineService {
 
     public Mono<String> updateSchedule(ScheduleDto scheduleDto) throws RuntimeException{
         timeCalculateService = new TimeCalculateService(scheduleDto);
-        return Mono.zip(colorService.findColor(scheduleDto.getColorId()), scheduleService.getSchedule(scheduleDto.getScheduleId()))
-                .flatMap(req -> scheduleService.save(converter.toScheduleForUpdate(req.getT2(), scheduleDto, req.getT1())))
-                .flatMap(schedule -> notificationService.saveAll(converter.toNotificationList(scheduleDto.getNotificationDtoList(), schedule.getId(), timeCalculateService)))
+        return Mono.zip(scheduleService.getSchedule(scheduleDto.getScheduleId()), colorService.findColor(scheduleDto.getColorId()))
+                .flatMap(req -> scheduleService.save(converter.toScheduleForUpdate(req.getT1(), req.getT2(), scheduleDto)))
+                .flatMap(schedule -> notificationService.deleteByScheduleId(scheduleDto.getScheduleId()))
+                .then(Mono.defer(() -> notificationService.saveAll(converter.toNotificationList(scheduleDto.getNotificationDtoList(), scheduleDto.getScheduleId(), timeCalculateService))))
                 .flatMap(result -> Mono.just("update success"));
     }
 }

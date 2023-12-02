@@ -9,9 +9,9 @@ import reactor.core.publisher.Flux;
 @Repository("scheduleRepository")
 public interface ScheduleRepository extends ReactiveCrudRepository<Schedule, Long> {
 
-    @Query( "select s from schedule s " +
-            "where s.memberId = :memberId " +
-            "and (s.startYear = :year or s.endYear = :year) " +
-            "and (s.startMonth = :month or s.endMonth = :month)")
+    @Query( "select schedule.* from schedule " +
+            "where schedule.member_id = :memberId " +
+            "and (schedule.start_year = :year or schedule.end_year = :year) " +
+            "and (schedule.start_month = :month or schedule.end_month = :month)")
     Flux<Schedule> findAllScheduleForMonth(long memberId, int year, int month);
 }

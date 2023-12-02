@@ -33,7 +33,7 @@ public class Converter {
                             ,scheduleDto.getNote());
     }
 
-    public Schedule toScheduleForUpdate(Schedule schedule, ScheduleDto scheduleDto, Color color){
+    public Schedule toScheduleForUpdate(Schedule schedule, Color color, ScheduleDto scheduleDto){
         return new Schedule(schedule.getId()
                 ,color.getId()
                 ,color.getName()
