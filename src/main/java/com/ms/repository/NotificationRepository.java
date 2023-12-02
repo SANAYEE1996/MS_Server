@@ -10,7 +10,7 @@ import reactor.core.publisher.Mono;
 @Repository("notificationRepository")
 public interface NotificationRepository extends ReactiveCrudRepository<Notification, Long> {
 
-    Flux<Notification> findByScheduleId(Long scheduleId);
+    Flux<Notification> findAllByScheduleId(Long scheduleId);
 
     @Modifying
     Mono<Void> deleteByScheduleId(Long scheduleId);
