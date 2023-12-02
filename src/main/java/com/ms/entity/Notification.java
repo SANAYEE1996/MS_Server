@@ -7,7 +7,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-@Table(name = "notification")
+@Table("notification")
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
@@ -22,9 +22,8 @@ public class Notification {
     @Column("type")
     private NotificationType notificationType;
 
-    @Column("value")
     private Integer value;
 
-    @Column("time")
-    private String time;
+    @Column("notification_time")
+    private String notificationTime;
 }

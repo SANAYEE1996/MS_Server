@@ -2,6 +2,7 @@ package com.ms.service;
 
 import com.ms.dto.NotificationDto;
 import com.ms.dto.ScheduleDto;
+import com.ms.entity.Color;
 import com.ms.entity.Notification;
 import com.ms.entity.Schedule;
 import org.springframework.stereotype.Component;
@@ -12,9 +13,10 @@ import java.util.List;
 @Component
 public class Converter {
 
-    public Schedule toSchedule(ScheduleDto scheduleDto, Long colorId){
+    public Schedule toSchedule(ScheduleDto scheduleDto, Color color){
         return new Schedule(scheduleDto.getScheduleId()
-                            ,colorId
+                            ,color.getId()
+                            ,color.getName()
                             ,scheduleDto.getMemberId()
                             ,scheduleDto.getStartYear()
                             ,scheduleDto.getStartMonth()
@@ -31,9 +33,10 @@ public class Converter {
                             ,scheduleDto.getNote());
     }
 
-    public Schedule toScheduleForUpdate(Schedule schedule, ScheduleDto scheduleDto){
+    public Schedule toScheduleForUpdate(Schedule schedule, ScheduleDto scheduleDto, Color color){
         return new Schedule(schedule.getId()
-                ,scheduleDto.getColorId()
+                ,color.getId()
+                ,color.getName()
                 ,schedule.getMemberId()
                 ,scheduleDto.getStartYear()
                 ,scheduleDto.getStartMonth()
@@ -50,6 +53,30 @@ public class Converter {
                 ,scheduleDto.getNote());
     }
 
+    public List<ScheduleDto> toScheduleDtoList(List<Schedule> list){
+        return list.stream().map(this::toScheduleDto).toList();
+    }
+
+    public ScheduleDto toScheduleDto(Schedule schedule){
+        return new ScheduleDto(schedule.getId(),
+                                schedule.getMemberId(),
+                                schedule.getColorId(),
+                                schedule.getColorName(),
+                                schedule.getStartYear(),
+                                schedule.getStartMonth(),
+                                schedule.getStartDay(),
+                                schedule.getStartHour(),
+                                schedule.getStartMin(),
+                                schedule.getEndYear(),
+                                schedule.getEndMonth(),
+                                schedule.getEndDay(),
+                                schedule.getEndHour(),
+                                schedule.getEndMin(),
+                                schedule.getLocation(),
+                                schedule.getTitle(),
+                                schedule.getNote());
+    }
+
     public List<Notification> toNotificationList(List<NotificationDto> dtoList, Long scheduleId, TimeCalculateService calculate){
         return dtoList.stream().map(s -> {
             try {
@@ -61,7 +88,7 @@ public class Converter {
     }
 
     private Notification toNotification(NotificationDto dto, Long scheduleId, TimeCalculateService calculate) throws ParseException {
-        return new Notification(0L, scheduleId, dto.getType(), dto.getValue(), calculate.getTime(dto.getType(), dto.getValue()));
+        return new Notification(null, scheduleId, dto.getType(), dto.getValue(), calculate.getTime(dto.getType(), dto.getValue()));
     }
 
     public List<NotificationDto> toNotificationDtoList(List<Notification> notificationList){
@@ -69,6 +96,6 @@ public class Converter {
     }
 
     private NotificationDto toNotificationDto(Notification notification){
-        return new NotificationDto(notification.getId(), notification.getScheduleId(), notification.getNotificationType(), notification.getValue(), notification.getTime());
+        return new NotificationDto(notification.getId(), notification.getScheduleId(), notification.getNotificationType(), notification.getValue(), notification.getNotificationTime());
     }
 }

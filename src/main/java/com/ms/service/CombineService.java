@@ -3,7 +3,6 @@ package com.ms.service;
 import com.ms.dto.ScheduleDto;
 import com.ms.dto.ScheduleRequestDto;
 import com.ms.entity.Notification;
-import com.ms.repository.ScheduleRepositorySupport;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -18,8 +17,6 @@ public class CombineService {
 
     private final ScheduleService scheduleService;
 
-    private final ScheduleRepositorySupport scheduleRepositorySupport;
-
     private final NotificationService notificationService;
 
     private final ColorService colorService;
@@ -31,25 +28,26 @@ public class CombineService {
     public Mono<String> saveSchedule(ScheduleDto scheduleDto) {
         timeCalculateService = new TimeCalculateService(scheduleDto);
         return colorService.findColor(scheduleDto.getColorId())
-                .flatMap(color -> scheduleService.save(converter.toSchedule(scheduleDto, color.getId())))
+                .flatMap(color -> scheduleService.save(converter.toSchedule(scheduleDto, color)))
                 .flatMap(schedule -> notificationService.saveAll(converter.toNotificationList(scheduleDto.getNotificationDtoList(), schedule.getId(), timeCalculateService)))
                 .flatMap(result -> Mono.just("save success"));
     }
 
     public Mono<ScheduleDto> findScheduleForDay(ScheduleRequestDto scheduleRequestDto) throws RuntimeException{
         return Mono.zip(
-                scheduleRepositorySupport.findScheduleListForDay(scheduleRequestDto),
+                scheduleService.getSchedule(scheduleRequestDto.getScheduleId()),
                 notificationService.getNotificationList(scheduleRequestDto.getScheduleId())
-                ).map(req -> {
-                    ScheduleDto dto = req.getT1();
+                ).map(req ->{
+                    ScheduleDto dto = converter.toScheduleDto(req.getT1());
                     List<Notification> list = req.getT2();
                     dto.setNotification(converter.toNotificationDtoList(list));
                     return dto;
                 });
     }
 
-    public Mono<List<ScheduleDto>> findScheduleForMonth(ScheduleRequestDto scheduleRequestDto) throws RuntimeException{
-        return scheduleRepositorySupport.findScheduleListForMonth(scheduleRequestDto);
+    public Mono<List<ScheduleDto>> findScheduleForMonth(ScheduleRequestDto dto) throws RuntimeException{
+        return scheduleService.findScheduleForMonth(dto.getMemberId(), dto.getYear(), dto.getMonth())
+                .map(converter::toScheduleDtoList);
     }
 
     public Mono<String> deleteSchedule(Long schedule_id) throws RuntimeException{
@@ -61,7 +59,7 @@ public class CombineService {
     public Mono<String> updateSchedule(ScheduleDto scheduleDto) throws RuntimeException{
         timeCalculateService = new TimeCalculateService(scheduleDto);
         return Mono.zip(colorService.findColor(scheduleDto.getColorId()), scheduleService.getSchedule(scheduleDto.getScheduleId()))
-                .flatMap(req -> scheduleService.save(converter.toScheduleForUpdate(req.getT2(), scheduleDto)))
+                .flatMap(req -> scheduleService.save(converter.toScheduleForUpdate(req.getT2(), scheduleDto, req.getT1())))
                 .flatMap(schedule -> notificationService.saveAll(converter.toNotificationList(scheduleDto.getNotificationDtoList(), schedule.getId(), timeCalculateService)))
                 .flatMap(result -> Mono.just("update success"));
     }

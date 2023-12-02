@@ -22,7 +22,7 @@ public class NotificationService {
     }
 
     public Mono<List<Notification>> getNotificationList(Long scheduleId){
-        return notificationRepository.findByScheduleId(scheduleId).collectList();
+        return notificationRepository.findAllByScheduleId(scheduleId).collectList();
     }
 
     public Mono<Void> deleteByScheduleId(Long scheduleId){

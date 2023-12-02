@@ -7,6 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
 
+import java.util.List;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -34,6 +36,10 @@ public class ScheduleService {
             }
             return Mono.error(new RuntimeException(id + "is not exists id !"));
         });
+    }
+
+    public Mono<List<Schedule>> findScheduleForMonth(long memberId, int year, int month){
+        return scheduleRepository.findAllScheduleForMonth(memberId, year, month).collectList();
     }
 
     public Mono<Boolean> isIdExists(Long id){

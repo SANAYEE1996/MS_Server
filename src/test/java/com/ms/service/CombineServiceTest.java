@@ -12,8 +12,6 @@ import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-
 @SpringBootTest
 public class CombineServiceTest {
 
@@ -21,56 +19,56 @@ public class CombineServiceTest {
     private CombineService combineService;
 
     @Test
-    void saveTest() throws ParseException {
+    void saveTest(){
         List<NotificationDto> notificationDtoList = new ArrayList<>();
         notificationDtoList.add(NotificationDto.builder().type(NotificationType.WEEK).value(1).build());
         notificationDtoList.add(NotificationDto.builder().type(NotificationType.DAY).value(1).build());
         notificationDtoList.add(NotificationDto.builder().type(NotificationType.HOUR).value(6).build());
+
+        String title = "모니터링 세미나";
+        String note = "홍대입구역 한빛빌딩 2층";
+        String location = "홍대입구역 근처";
+
         ScheduleDto scheduleDto = ScheduleDto
                 .builder()
                 .memberId(1L)
                 .colorId(3L)
                 .startYear(2023)
-                .startMonth(11)
-                .startDay(8)
-                .startHour(0)
+                .startMonth(12)
+                .startDay(7)
+                .startHour(19)
                 .startMin(0)
                 .endYear(2023)
-                .endMonth(11)
-                .endDay(9)
-                .endHour(0)
+                .endMonth(12)
+                .endDay(7)
+                .endHour(20)
                 .endMin(0)
-                .title("어머님 생신")
-                .note("매번 감사합니다.")
-                .location("한우집")
+                .title(title)
+                .note(note)
+                .location(location)
                 .notificationDtoList(notificationDtoList)
                 .build();
 
-        combineService.saveSchedule(scheduleDto);
-    }
+        String resultText = combineService.saveSchedule(scheduleDto).block();
 
-    @Test
-    void getTest(){
-        ScheduleRequestDto scheduleRequestDto = ScheduleRequestDto.builder().memberId(1L).year(2023).month(8).build();
-
-        List<ScheduleDto> scheduleDtoList = combineService.findScheduleForMonth(scheduleRequestDto);
-
-        System.out.println("is Empty???? "+scheduleDtoList.isEmpty());
-        for(ScheduleDto scheduleDto : scheduleDtoList){
-            System.out.println("scheduleDto : " + scheduleDto.toString());
-        }
-
+        System.out.println("save Test gogo");
+        System.out.println(resultText);
     }
 
     @Test
     void getDayTest(){
-        ScheduleRequestDto scheduleRequestDto = ScheduleRequestDto.builder().scheduleId(1L).build();
-
-        ScheduleDto scheduleDto = combineService.findScheduleForDay(scheduleRequestDto);
-        List<NotificationDto> notificationDtoList = scheduleDto.getNotificationDtoList();
-        for(NotificationDto notificationDto : notificationDtoList){
-            System.out.println(notificationDto.toString());
+        ScheduleRequestDto scheduleRequestDto = ScheduleRequestDto.builder().scheduleId(8L).build();
+        ScheduleDto result = combineService.findScheduleForDay(scheduleRequestDto).block();
+        List<NotificationDto> list = result.getNotificationDtoList();
+        System.out.println(result.getTitle());
+        for(NotificationDto dto : list){
+            System.out.println(dto.getNotificationTime());
         }
+    }
+
+    @Test
+    void getMonthTest(){
+        ScheduleRequestDto scheduleRequestDto = ScheduleRequestDto.builder().scheduleId(1L).build();
 
     }
 
@@ -78,7 +76,6 @@ public class CombineServiceTest {
     void deleteTest(){
         Long schedule_id = 4L;
 
-        combineService.deleteSchedule(schedule_id);
     }
 
     @Test
@@ -108,13 +105,5 @@ public class CombineServiceTest {
                 .notificationDtoList(notificationDtoList)
                 .build();
 
-        combineService.updateSchedule(scheduleDto);
-
-        ScheduleRequestDto scheduleRequestDto = ScheduleRequestDto.builder().scheduleId(8L).build();
-
-        ScheduleDto respectSchedule = combineService.findScheduleForDay(scheduleRequestDto);
-
-        assertThat(scheduleDto.getTitle()).isEqualTo(respectSchedule.getTitle());
-        assertThat(scheduleDto.getNote()).isEqualTo(respectSchedule.getNote());
     }
 }

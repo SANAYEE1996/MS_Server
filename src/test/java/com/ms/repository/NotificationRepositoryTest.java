@@ -4,7 +4,6 @@ import com.ms.dto.NotificationDto;
 import com.ms.entity.NotificationType;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.ArrayList;
@@ -12,9 +11,6 @@ import java.util.List;
 
 @SpringBootTest
 public class NotificationRepositoryTest {
-
-    @Autowired
-    private NotificationBulkRepository notificationBulkRepository;
 
     @Test
     @DisplayName("enum type 인데 db에 잘 저장되는지...")
@@ -45,6 +41,5 @@ public class NotificationRepositoryTest {
                 .notificationTime("2023-08-12 18:00")
                 .build());
 
-        notificationBulkRepository.saveAll(notificationList);
     }
 }

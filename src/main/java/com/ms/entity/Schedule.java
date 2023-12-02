@@ -19,6 +19,9 @@ public class Schedule {
     @Column("color_id")
     private Long colorId;
 
+    @Column("color_name")
+    private String colorName;
+
     @Column("member_id")
     private Long memberId;
 
