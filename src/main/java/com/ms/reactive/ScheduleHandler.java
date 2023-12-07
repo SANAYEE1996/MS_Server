@@ -3,6 +3,7 @@ package com.ms.reactive;
 import com.ms.dto.ScheduleDto;
 import com.ms.dto.ScheduleRequestDto;
 import com.ms.service.CombineService;
+import com.ms.service.NotificationSyncService;
 import com.ms.service.ScheduleValidationCheck;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +19,8 @@ import reactor.core.publisher.Mono;
 public class ScheduleHandler {
 
     private final CombineService combineService;
+
+    private final NotificationSyncService notificationSyncService;
 
     public Mono<ServerResponse> getDaySchedule(ServerRequest request){
         return request.bodyToMono(ScheduleRequestDto.class)
@@ -59,5 +62,9 @@ public class ScheduleHandler {
                 .flatMap(combineService::updateSchedule)
                 .flatMap(resultComment -> ServerResponse.ok().bodyValue(resultComment))
                 .onErrorResume(error -> ServerResponse.badRequest().bodyValue(new ErrorResponse(HttpStatus.BAD_REQUEST, error.getMessage())));
+    }
+
+    public Mono<ServerResponse> check(ServerRequest request){
+        return ServerResponse.ok().bodyValue("인증 되었나?");
     }
 }
