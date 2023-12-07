@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -61,6 +60,7 @@ public class CombineServiceTest {
     void getDayTest(){
         ScheduleRequestDto scheduleRequestDto = ScheduleRequestDto.builder().scheduleId(8L).build();
         ScheduleDto result = combineService.findScheduleForDay(scheduleRequestDto).block();
+        assert result != null;
         List<NotificationDto> list = result.getNotificationDtoList();
         System.out.println(result.getTitle());
         for(NotificationDto dto : list){
@@ -78,6 +78,7 @@ public class CombineServiceTest {
 
         List<ScheduleDto> result = combineService.findScheduleForMonth(scheduleRequestDto).block();
 
+        assert result != null;
         for(ScheduleDto dto : result){
             System.out.println(dto.getTitle() + " " +dto.getNote());
         }
@@ -132,6 +133,7 @@ public class CombineServiceTest {
         ScheduleDto expect = combineService.findScheduleForDay(ScheduleRequestDto.builder().scheduleId(15L).build()).block();
 
 
+        assert expect != null;
         assertThat(modifyTitle).isEqualTo(expect.getTitle());
         assertThat(modifyNote).isEqualTo(expect.getNote());
     }
