@@ -40,12 +40,23 @@ public class ScheduleHandler {
 
     public Mono<ServerResponse> saveSchedule(ServerRequest request){
         return filter.getBearerToken(request)
-                .flatMap(req -> Mono.zip(request.bodyToMono(ScheduleDto.class), Mono.just(req)))
-                .flatMap(req -> filter.authenticate(req.getT1().getMemberId(), req.getT2()))
-                .flatMap(req -> request.bodyToMono(ScheduleDto.class))
-                .doOnNext(req -> ScheduleValidationCheck.getInstance(req).check())
-                .flatMap(req -> Mono.zip(combineService.saveSchedule(req), Mono.just("")))
-                .flatMap(req -> ServerResponse.ok().bodyValue(req.getT1()))
+                .flatMap(req -> Mono.zip(
+                            request.bodyToMono(ScheduleDto.class).doOnNext(result -> ScheduleValidationCheck.getInstance(result).check()),
+                            Mono.just(req)
+                        )
+                )
+                .flatMap(req -> Mono.zip(
+                            filter.authenticate(req.getT1().getMemberId(), req.getT2()),
+                            combineService.saveSchedule(req.getT1())
+                        )
+                )
+                .flatMap(req -> Mono.zip(
+                        Mono.just(req.getT1()),
+                        Mono.just(req.getT2()),
+                        combineService.findNotificationListByScheduleId(req.getT2().getId())
+                ))
+                .map(req -> combineService.toNotificationServerDtoList(req.getT2(), req.getT1(), req.getT3()))
+                .flatMap(notificationSyncService::send)
                 .onErrorResume(error -> ServerResponse.badRequest().bodyValue(new ErrorResponse(HttpStatus.BAD_REQUEST, error.getMessage())));
     }
 
