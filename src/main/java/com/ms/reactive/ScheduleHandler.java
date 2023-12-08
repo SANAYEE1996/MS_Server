@@ -18,6 +18,8 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class ScheduleHandler {
 
+    private final AuthFilter filter;
+
     private final CombineService combineService;
 
     private final NotificationSyncService notificationSyncService;
@@ -37,10 +39,13 @@ public class ScheduleHandler {
     }
 
     public Mono<ServerResponse> saveSchedule(ServerRequest request){
-        return request.bodyToMono(ScheduleDto.class)
+        return filter.getBearerToken(request)
+                .flatMap(req -> Mono.zip(request.bodyToMono(ScheduleDto.class), Mono.just(req)))
+                .flatMap(req -> filter.authenticate(req.getT1().getMemberId(), req.getT2()))
+                .flatMap(req -> request.bodyToMono(ScheduleDto.class))
                 .doOnNext(req -> ScheduleValidationCheck.getInstance(req).check())
-                .flatMap(combineService::saveSchedule)
-                .flatMap(resultComment -> ServerResponse.ok().bodyValue(resultComment))
+                .flatMap(req -> Mono.zip(combineService.saveSchedule(req), Mono.just("")))
+                .flatMap(req -> ServerResponse.ok().bodyValue(req.getT1()))
                 .onErrorResume(error -> ServerResponse.badRequest().bodyValue(new ErrorResponse(HttpStatus.BAD_REQUEST, error.getMessage())));
     }
 
