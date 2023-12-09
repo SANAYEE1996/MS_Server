@@ -1,8 +1,11 @@
 package com.ms.service;
 
+import com.ms.dto.MemberInfoDto;
+import com.ms.dto.NotifyDto;
 import com.ms.dto.ScheduleDto;
 import com.ms.dto.ScheduleRequestDto;
 import com.ms.entity.Notification;
+import com.ms.entity.Schedule;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,12 +28,17 @@ public class CombineService {
 
     private TimeCalculateService timeCalculateService;
 
-    public Mono<String> saveSchedule(ScheduleDto scheduleDto) {
+    public Mono<Schedule> saveSchedule(ScheduleDto scheduleDto) {
         timeCalculateService = new TimeCalculateService(scheduleDto);
         return colorService.findColor(scheduleDto.getColorId())
                 .flatMap(color -> scheduleService.save(converter.toSchedule(scheduleDto, color)))
-                .flatMap(schedule -> notificationService.saveAll(converter.toNotificationList(scheduleDto.getNotificationDtoList(), schedule.getId(), timeCalculateService)))
-                .flatMap(result -> Mono.just("save success"));
+                .flatMap(schedule ->
+                        Mono.zip(
+                                notificationService.saveAll(converter.toNotificationList(scheduleDto.getNotificationDtoList(), schedule.getId(), timeCalculateService)),
+                                Mono.just(schedule)
+                        )
+                )
+                .flatMap(result -> Mono.just(result.getT2()));
     }
 
     public Mono<ScheduleDto> findScheduleForDay(ScheduleRequestDto scheduleRequestDto) throws RuntimeException{
@@ -43,6 +51,14 @@ public class CombineService {
                     dto.setNotification(converter.toNotificationDtoList(list));
                     return dto;
                 });
+    }
+
+    public Mono<List<Notification>> findNotificationListByScheduleId(Long id){
+        return notificationService.getNotificationList(id);
+    }
+
+    public List<NotifyDto> toNotificationServerDtoList(Schedule schedule, MemberInfoDto dto, List<Notification> list){
+        return converter.toNotificationServerDtoList(schedule, dto, list);
     }
 
     public Mono<List<ScheduleDto>> findScheduleForMonth(ScheduleRequestDto dto) throws RuntimeException{
