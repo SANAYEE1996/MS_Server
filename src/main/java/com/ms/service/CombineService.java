@@ -1,7 +1,7 @@
 package com.ms.service;
 
 import com.ms.dto.MemberInfoDto;
-import com.ms.dto.NotificationServerDto;
+import com.ms.dto.NotifyDto;
 import com.ms.dto.ScheduleDto;
 import com.ms.dto.ScheduleRequestDto;
 import com.ms.entity.Notification;
@@ -57,7 +57,7 @@ public class CombineService {
         return notificationService.getNotificationList(id);
     }
 
-    public List<NotificationServerDto> toNotificationServerDtoList(Schedule schedule, MemberInfoDto dto, List<Notification> list){
+    public List<NotifyDto> toNotificationServerDtoList(Schedule schedule, MemberInfoDto dto, List<Notification> list){
         return converter.toNotificationServerDtoList(schedule, dto, list);
     }
 

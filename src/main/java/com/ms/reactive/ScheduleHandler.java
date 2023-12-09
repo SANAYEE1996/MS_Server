@@ -81,6 +81,14 @@ public class ScheduleHandler {
     }
 
     public Mono<ServerResponse> check(ServerRequest request){
-        return ServerResponse.ok().bodyValue("인증 되었나?");
+        return filter.getBearerToken(request)
+                .flatMap(req -> Mono.zip(
+                                request.bodyToMono(ScheduleRequestDto.class),
+                                Mono.just(req)
+                        )
+                )
+                .flatMap(req -> filter.authenticate(req.getT1().getMemberId(), req.getT2()))
+                .flatMap(req -> ServerResponse.ok().bodyValue(req))
+                .onErrorResume(req -> ServerResponse.badRequest().bodyValue(req.getMessage()));
     }
 }

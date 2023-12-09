@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class NotificationServerDto {
+public class NotifyDto {
 
     private Long schedule_id;
 

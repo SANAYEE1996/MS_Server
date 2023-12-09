@@ -21,7 +21,7 @@ public class ScheduleRouter {
                 .POST("/schedule/save", accept(MediaType.APPLICATION_JSON), handler::saveSchedule)
                 .POST("/schedule/delete", accept(MediaType.APPLICATION_JSON), handler::deleteSchedule)
                 .POST("/schedule/update", accept(MediaType.APPLICATION_JSON), handler::updateSchedule)
-                .GET("/schedule/test", handler::check)
+                .POST("/schedule/check", accept(MediaType.APPLICATION_JSON), handler::check)
                 .build();
     }
 }

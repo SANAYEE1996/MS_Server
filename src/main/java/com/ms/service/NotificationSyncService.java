@@ -1,6 +1,6 @@
 package com.ms.service;
 
-import com.ms.dto.NotificationServerDto;
+import com.ms.dto.NotifyDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -19,12 +19,12 @@ public class NotificationSyncService {
     @Value("${url.notification}")
     private String notificationUrl;
 
-    public Mono<ServerResponse> send(List<NotificationServerDto> list){
+    public Mono<ServerResponse> send(List<NotifyDto> list){
         WebClient webClient = WebClient.builder()
                 .baseUrl(notificationUrl)
                 .build();
 
-        return webClient.post().uri("/notification/save").bodyValue(new saveDto(list)).retrieve()
+        return webClient.post().uri("/notification/save").bodyValue(new SaveDto(list)).retrieve()
                 .onStatus(HttpStatusCode::is3xxRedirection, response -> Mono.error(new RuntimeException("server 3XX error")))
                 .onStatus(HttpStatusCode::is4xxClientError, response -> Mono.error(new RuntimeException("UnAuthorized")))
                 .onStatus(HttpStatusCode::is5xxServerError, response -> Mono.error(new RuntimeException("server 5XX error")))
@@ -35,7 +35,7 @@ public class NotificationSyncService {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    private static class saveDto{
-        private List<NotificationServerDto> list;
+    private static class SaveDto{
+        private List<NotifyDto> dtoList;
     }
 }
