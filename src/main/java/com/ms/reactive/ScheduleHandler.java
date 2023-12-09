@@ -18,6 +18,8 @@ import reactor.core.publisher.Mono;
 @RequiredArgsConstructor
 public class ScheduleHandler {
 
+    private final AuthFilter filter;
+
     private final CombineService combineService;
 
     private final NotificationSyncService notificationSyncService;
@@ -37,10 +39,24 @@ public class ScheduleHandler {
     }
 
     public Mono<ServerResponse> saveSchedule(ServerRequest request){
-        return request.bodyToMono(ScheduleDto.class)
-                .doOnNext(req -> ScheduleValidationCheck.getInstance(req).check())
-                .flatMap(combineService::saveSchedule)
-                .flatMap(resultComment -> ServerResponse.ok().bodyValue(resultComment))
+        return filter.getBearerToken(request)
+                .flatMap(req -> Mono.zip(
+                            request.bodyToMono(ScheduleDto.class).doOnNext(result -> ScheduleValidationCheck.getInstance(result).check()),
+                            Mono.just(req)
+                        )
+                )
+                .flatMap(req -> Mono.zip(
+                            filter.authenticate(req.getT1().getMemberId(), req.getT2()),
+                            combineService.saveSchedule(req.getT1())
+                        )
+                )
+                .flatMap(req -> Mono.zip(
+                        Mono.just(req.getT1()),
+                        Mono.just(req.getT2()),
+                        combineService.findNotificationListByScheduleId(req.getT2().getId())
+                ))
+                .map(req -> combineService.toNotificationServerDtoList(req.getT2(), req.getT1(), req.getT3()))
+                .flatMap(notificationSyncService::send)
                 .onErrorResume(error -> ServerResponse.badRequest().bodyValue(new ErrorResponse(HttpStatus.BAD_REQUEST, error.getMessage())));
     }
 
@@ -65,6 +81,14 @@ public class ScheduleHandler {
     }
 
     public Mono<ServerResponse> check(ServerRequest request){
-        return ServerResponse.ok().bodyValue("인증 되었나?");
+        return filter.getBearerToken(request)
+                .flatMap(req -> Mono.zip(
+                                request.bodyToMono(ScheduleRequestDto.class),
+                                Mono.just(req)
+                        )
+                )
+                .flatMap(req -> filter.authenticate(req.getT1().getMemberId(), req.getT2()))
+                .flatMap(req -> ServerResponse.ok().bodyValue(req))
+                .onErrorResume(req -> ServerResponse.badRequest().bodyValue(req.getMessage()));
     }
 }

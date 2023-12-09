@@ -1,6 +1,8 @@
 package com.ms.service;
 
+import com.ms.dto.MemberInfoDto;
 import com.ms.dto.NotificationDto;
+import com.ms.dto.NotifyDto;
 import com.ms.dto.ScheduleDto;
 import com.ms.entity.Color;
 import com.ms.entity.Notification;
@@ -97,5 +99,13 @@ public class Converter {
 
     private NotificationDto toNotificationDto(Notification notification){
         return new NotificationDto(notification.getId(), notification.getScheduleId(), notification.getNotificationType(), notification.getValue(), notification.getNotificationTime());
+    }
+
+    public List<NotifyDto> toNotificationServerDtoList(Schedule schedule, MemberInfoDto dto, List<Notification> list){
+        return list.stream().map(s -> toNotificationServerDto(schedule, dto, s)).toList();
+    }
+
+    private NotifyDto toNotificationServerDto(Schedule schedule, MemberInfoDto dto, Notification notification){
+        return new NotifyDto(schedule.getId(), dto.getId(), dto.getEmail(), schedule.getTitle(), notification.getNotificationTime());
     }
 }

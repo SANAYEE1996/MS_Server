@@ -13,17 +13,15 @@ import static org.springframework.web.reactive.function.server.RouterFunctions.r
 @RequiredArgsConstructor
 public class ScheduleRouter {
 
-    private final JwtFilter jwtFilter;
-
     @Bean
     public RouterFunction<?> routeProduct(ScheduleHandler handler){
         return route()
                 .POST("/schedule/day", accept(MediaType.APPLICATION_JSON), handler::getDaySchedule)
                 .POST("/schedule/month", accept(MediaType.APPLICATION_JSON), handler::getMonthSchedule)
-                .POST("/schedule/save", accept(MediaType.APPLICATION_JSON), handler::saveSchedule).filter(jwtFilter)
-                .POST("/schedule/delete", accept(MediaType.APPLICATION_JSON), handler::deleteSchedule).filter(jwtFilter)
-                .POST("/schedule/update", accept(MediaType.APPLICATION_JSON), handler::updateSchedule).filter(jwtFilter)
-                .GET("/schedule/test", handler::check).filter(jwtFilter)
+                .POST("/schedule/save", accept(MediaType.APPLICATION_JSON), handler::saveSchedule)
+                .POST("/schedule/delete", accept(MediaType.APPLICATION_JSON), handler::deleteSchedule)
+                .POST("/schedule/update", accept(MediaType.APPLICATION_JSON), handler::updateSchedule)
+                .POST("/schedule/check", accept(MediaType.APPLICATION_JSON), handler::check)
                 .build();
     }
 }
