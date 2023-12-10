@@ -76,16 +76,16 @@ public class CombineService {
         timeCalculateService = new TimeCalculateService(scheduleDto);
         return Mono.zip(scheduleService.getSchedule(scheduleDto.getScheduleId()), colorService.findColor(scheduleDto.getColorId()))
                 .flatMap(req -> scheduleService.save(converter.toScheduleForUpdate(req.getT1(), req.getT2(), scheduleDto)))
-                .flatMap(req -> {
-                            notificationService.deleteByScheduleId(scheduleDto.getScheduleId());
-                            return Mono.just(req);
-                        }
-                )
                 .flatMap(req -> Mono.zip(
-                            notificationService.saveAll(converter.toNotificationList(scheduleDto.getNotificationDtoList(), scheduleDto.getScheduleId(), timeCalculateService)),
-                            Mono.just(req)
+                            Mono.just(req),
+                            notificationService.deleteByScheduleId(scheduleDto.getScheduleId())
                         )
                 )
-                .flatMap(result -> Mono.just(result.getT2()));
+                .flatMap(req -> Mono.zip(
+                                Mono.just(req.getT1()),
+                                notificationService.saveAll(converter.toNotificationList(scheduleDto.getNotificationDtoList(), scheduleDto.getScheduleId(), timeCalculateService))
+                        )
+                )
+                .flatMap(result -> Mono.just(result.getT1()));
     }
 }
