@@ -72,12 +72,20 @@ public class CombineService {
                 .then(Mono.defer(() -> Mono.just("delete success")));
     }
 
-    public Mono<String> updateSchedule(ScheduleDto scheduleDto) throws RuntimeException{
+    public Mono<Schedule> updateSchedule(ScheduleDto scheduleDto) throws RuntimeException{
         timeCalculateService = new TimeCalculateService(scheduleDto);
         return Mono.zip(scheduleService.getSchedule(scheduleDto.getScheduleId()), colorService.findColor(scheduleDto.getColorId()))
                 .flatMap(req -> scheduleService.save(converter.toScheduleForUpdate(req.getT1(), req.getT2(), scheduleDto)))
-                .flatMap(schedule -> notificationService.deleteByScheduleId(scheduleDto.getScheduleId()))
-                .then(Mono.defer(() -> notificationService.saveAll(converter.toNotificationList(scheduleDto.getNotificationDtoList(), scheduleDto.getScheduleId(), timeCalculateService))))
-                .flatMap(result -> Mono.just("update success"));
+                .flatMap(req -> Mono.zip(
+                            Mono.just(req),
+                            notificationService.deleteByScheduleId(scheduleDto.getScheduleId())
+                        )
+                )
+                .flatMap(req -> Mono.zip(
+                                Mono.just(req.getT1()),
+                                notificationService.saveAll(converter.toNotificationList(scheduleDto.getNotificationDtoList(), scheduleDto.getScheduleId(), timeCalculateService))
+                        )
+                )
+                .flatMap(result -> Mono.just(result.getT1()));
     }
 }
