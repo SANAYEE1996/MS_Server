@@ -13,6 +13,6 @@ public interface NotificationRepository extends ReactiveCrudRepository<Notificat
     Flux<Notification> findAllByScheduleId(Long scheduleId);
 
     @Modifying
-    Mono<Void> deleteByScheduleId(Long scheduleId);
+    Mono<Integer> deleteByScheduleId(Long scheduleId);
 
 }

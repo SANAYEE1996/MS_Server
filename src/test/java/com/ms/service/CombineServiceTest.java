@@ -4,6 +4,7 @@ import com.ms.dto.NotificationDto;
 import com.ms.dto.ScheduleDto;
 import com.ms.dto.ScheduleRequestDto;
 import com.ms.entity.NotificationType;
+import com.ms.entity.Schedule;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -50,10 +51,11 @@ public class CombineServiceTest {
                 .notificationDtoList(notificationDtoList)
                 .build();
 
-        String resultText = combineService.saveSchedule(scheduleDto).block();
+        Schedule schedule = combineService.saveSchedule(scheduleDto).block();
 
         System.out.println("save Test gogo");
-        System.out.println(resultText);
+        assert schedule != null;
+        System.out.println(schedule.getTitle());
     }
 
     @Test
@@ -126,9 +128,11 @@ public class CombineServiceTest {
                 .notificationDtoList(notificationDtoList)
                 .build();
 
-        String resultText = combineService.updateSchedule(scheduleDto).block();
+        Schedule schedule = combineService.updateSchedule(scheduleDto).block();
 
-        assertThat(resultText).isEqualTo("update success");
+        assert schedule != null;
+        assertThat(schedule.getTitle()).isEqualTo(modifyTitle);
+        assertThat(schedule.getNote()).isEqualTo(modifyNote);
 
         ScheduleDto expect = combineService.findScheduleForDay(ScheduleRequestDto.builder().scheduleId(15L).build()).block();
 

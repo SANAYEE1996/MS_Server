@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.server.ResponseStatusException;
 import reactor.core.publisher.Mono;
 
 @Slf4j
@@ -39,56 +40,82 @@ public class ScheduleHandler {
     }
 
     public Mono<ServerResponse> saveSchedule(ServerRequest request){
-        return filter.getBearerToken(request)
+        return filter.authenticate(request)
                 .flatMap(req -> Mono.zip(
-                            request.bodyToMono(ScheduleDto.class).doOnNext(result -> ScheduleValidationCheck.getInstance(result).check()),
-                            Mono.just(req)
+                            Mono.just(req),
+                            request.bodyToMono(ScheduleDto.class)
+                                    .doOnNext(result -> ScheduleValidationCheck.getInstance(result).check())
                         )
                 )
                 .flatMap(req -> Mono.zip(
-                            filter.authenticate(req.getT1().getMemberId(), req.getT2()),
-                            combineService.saveSchedule(req.getT1())
+                            Mono.just(req.getT1()),
+                            combineService.saveSchedule(req.getT2())
                         )
                 )
                 .flatMap(req -> Mono.zip(
-                        Mono.just(req.getT1()),
-                        Mono.just(req.getT2()),
-                        combineService.findNotificationListByScheduleId(req.getT2().getId())
-                ))
+                            Mono.just(req.getT1()),
+                            Mono.just(req.getT2()),
+                            combineService.findNotificationListByScheduleId(req.getT2().getId())
+                        )
+                )
                 .map(req -> combineService.toNotificationServerDtoList(req.getT2(), req.getT1(), req.getT3()))
-                .flatMap(notificationSyncService::send)
+                .flatMap(notificationSyncService::save)
                 .onErrorResume(error -> ServerResponse.badRequest().bodyValue(new ErrorResponse(HttpStatus.BAD_REQUEST, error.getMessage())));
     }
 
     public Mono<ServerResponse> deleteSchedule(ServerRequest request){
-        return request.bodyToMono(ScheduleRequestDto.class)
-                .flatMap(req -> combineService.deleteSchedule(req.getScheduleId()))
-                .flatMap(resultComment -> ServerResponse.ok().bodyValue(resultComment))
+        return filter.authenticate(request)
+                .flatMap(req -> Mono.zip(
+                                Mono.just(req),
+                                request.bodyToMono(ScheduleRequestDto.class)
+                                        .doOnNext(result -> checkScheduleIdNull(result.getScheduleId()))
+                        )
+                )
+                .flatMap(req -> Mono.zip(
+                                Mono.just(req.getT1()),
+                                Mono.just(req.getT2()),
+                                combineService.deleteSchedule(req.getT2().getScheduleId())
+                        )
+                )
+                .flatMap(req -> notificationSyncService.delete(req.getT2().getScheduleId()))
                 .onErrorResume(error -> ServerResponse.badRequest().bodyValue(new ErrorResponse(HttpStatus.BAD_REQUEST, error.getMessage())));
     }
 
     public Mono<ServerResponse> updateSchedule(ServerRequest request){
-        return request.bodyToMono(ScheduleDto.class)
-                .doOnNext(req -> {
-                    if(req.getScheduleId() == null){
-                        throw new RuntimeException("schedule id must not null or 0");
-                    }
-                })
-                .doOnNext(req -> ScheduleValidationCheck.getInstance(req).check())
-                .flatMap(combineService::updateSchedule)
-                .flatMap(resultComment -> ServerResponse.ok().bodyValue(resultComment))
+        return filter.authenticate(request)
+                .flatMap(req -> Mono.zip(
+                                Mono.just(req),
+                                request.bodyToMono(ScheduleDto.class)
+                                        .doOnNext(result -> checkScheduleIdNull(result.getScheduleId()))
+                                        .doOnNext(result -> ScheduleValidationCheck.getInstance(result).check())
+                        )
+                )
+                .flatMap(req -> Mono.zip(
+                                Mono.just(req.getT1()),
+                                combineService.updateSchedule(req.getT2())
+                        )
+                )
+                .flatMap(req -> Mono.zip(
+                                Mono.just(req.getT1()),
+                                Mono.just(req.getT2()),
+                                combineService.findNotificationListByScheduleId(req.getT2().getId())
+                        )
+                )
+                .flatMap(req -> Mono.zip(
+                        Mono.just(combineService.toNotificationServerDtoList(req.getT2(), req.getT1(), req.getT3())),
+                        Mono.just(req.getT2().getId())
+                ))
+                .flatMap(req -> notificationSyncService.update(req.getT2(), req.getT1()))
                 .onErrorResume(error -> ServerResponse.badRequest().bodyValue(new ErrorResponse(HttpStatus.BAD_REQUEST, error.getMessage())));
     }
 
     public Mono<ServerResponse> check(ServerRequest request){
-        return filter.getBearerToken(request)
-                .flatMap(req -> Mono.zip(
-                                request.bodyToMono(ScheduleRequestDto.class),
-                                Mono.just(req)
-                        )
-                )
-                .flatMap(req -> filter.authenticate(req.getT1().getMemberId(), req.getT2()))
+        return filter.authenticate(request)
                 .flatMap(req -> ServerResponse.ok().bodyValue(req))
                 .onErrorResume(req -> ServerResponse.badRequest().bodyValue(req.getMessage()));
+    }
+
+    private void checkScheduleIdNull(Long id){
+        if(id == null) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "schedule id must not be null");
     }
 }

@@ -25,7 +25,7 @@ public class NotificationService {
         return notificationRepository.findAllByScheduleId(scheduleId).collectList();
     }
 
-    public Mono<Void> deleteByScheduleId(Long scheduleId){
+    public Mono<Integer> deleteByScheduleId(Long scheduleId){
         return notificationRepository.deleteByScheduleId(scheduleId);
     }
 }
