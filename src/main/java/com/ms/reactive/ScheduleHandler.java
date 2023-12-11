@@ -78,7 +78,6 @@ public class ScheduleHandler {
                         )
                 )
                 .flatMap(req -> notificationSyncService.delete(req.getT2().getScheduleId()))
-                .flatMap(resultComment -> ServerResponse.ok().bodyValue(resultComment))
                 .onErrorResume(error -> ServerResponse.badRequest().bodyValue(new ErrorResponse(HttpStatus.BAD_REQUEST, error.getMessage())));
     }
 
@@ -107,7 +106,6 @@ public class ScheduleHandler {
                         Mono.just(req.getT2().getId())
                 ))
                 .flatMap(req -> notificationSyncService.update(req.getT2(), req.getT1()))
-                .flatMap(result -> ServerResponse.ok().bodyValue(result))
                 .onErrorResume(error -> ServerResponse.badRequest().bodyValue(new ErrorResponse(HttpStatus.BAD_REQUEST, error.getMessage())));
     }
 
